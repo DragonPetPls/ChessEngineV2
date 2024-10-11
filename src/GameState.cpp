@@ -50,6 +50,7 @@ void GameState::printBoard() {
         }
         std::cout << std::endl;
     }
+    std::cout << "En passant: " << (int) enPassant << std::endl;
 }
 
 
@@ -72,13 +73,15 @@ void GameState::loadStartingPosition() {
 
     whoToMove = WHITE;
     notWhoToMove = BLACK;
+
+    enPassant = 0;
 }
 
 /*
  * This function will change the board setup
  * it does assume that the input move is legal
  */
-void GameState::doMove(move move) {
+void GameState::doMove(move move, piece promoteTo) {
 
     piece movingPiece;
 
@@ -113,8 +116,38 @@ void GameState::doMove(move move) {
     } else if (pieceBoards[notWhoToMove][QUEEN] & move) {
         capturedPiece = QUEEN;
     }
-    if(capturedPiece != NONE){
+    if (capturedPiece != NONE) {
         pieceBoards[notWhoToMove][capturedPiece] &= ~move;
+    }
+
+    //Checking for special moves:
+    //Castle
+    if (movingPiece == KING) {
+        if (move == shortCastleKing[whoToMove]) {
+            //Short castle
+            pieceBoards[whoToMove][ROOK] ^= shortCastleRook[whoToMove];
+        } else if (move == longCastleKing[whoToMove]) {
+            //Long castle
+            pieceBoards[whoToMove][ROOK] ^= longCastleRook[whoToMove];
+        }
+    }
+
+    //Special Pawn moves
+    if(movingPiece == PAWN && capturedPiece == NONE){
+        if (!(move & ((move << 8) | (move << 16)))){
+            //En passant happend
+            bitboard capture = enPassant;
+            capture = capture << (NEXT_ROW * (4 - whoToMove ));
+            pieceBoards[notWhoToMove][PAWN] &= ~capture;
+        } else if (!(move & (move << 8)) && (move & (move << 16))){
+            //Advanced two squares
+            //Setting en passant
+            enPassant = move >> (NEXT_ROW * (1 + whoToMove * 3));
+        } else {
+            enPassant = 0;
+        }
+    } else {
+        enPassant = 0;
     }
 
     //Switching who to move
@@ -197,9 +230,9 @@ bool GameState::isBoardLegit() {
 
     for (int i = 0; i < 12; i++) {
         for (int j = 0; j < i; j++) {
-            if ((pieceBoards[i/6][i%6] & pieceBoards[j/6][j%6]) != 0) {
-                std::cout << "piece crash, color: " << i/2 << " piece: " << i%6
-                << " with color: " << j/2 << " piece: " << j%6<<  std::endl;
+            if ((pieceBoards[i / 6][i % 6] & pieceBoards[j / 6][j % 6]) != 0) {
+                std::cout << "piece crash, color: " << i / 2 << " piece: " << i % 6
+                          << " with color: " << j / 2 << " piece: " << j % 6 << std::endl;
                 isLegit = false;
             }
         }
