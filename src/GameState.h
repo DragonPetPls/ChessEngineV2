@@ -25,18 +25,24 @@
 #define NEXT_ROW 8
 
 typedef uint64_t bitboard;
-typedef uint64_t move;
+typedef uint64_t moveBitBoard;
 typedef uint8_t color;
 typedef uint8_t piece;
+
+struct move{
+    moveBitBoard move;
+    piece promoteTo;
+};
 
 class GameState {
 
 private:
 
-    const move shortCastleKing[2] = {10, 720575940379279360};
-    const move shortCastleRook[2] = {5, 360287970189639680};
-    const move longCastleKing[2] = {40, 2882303761517117440};
-    const move longCastleRook[2] = {144, 10376293541461622784};
+    const moveBitBoard shortCastleKing[2] = {10, 720575940379279360};
+    const moveBitBoard shortCastleRook[2] = {5, 360287970189639680};
+    const moveBitBoard longCastleKing[2] = {40, 2882303761517117440};
+    const moveBitBoard longCastleRook[2] = {144, 10376293541461622784};
+    const bitboard promotionBitBoard = 18374686479671623935;
 
     bitboard pieceBoards[2][AMOUNT_OF_PIECES];
     color whoToMove;
@@ -47,7 +53,8 @@ private:
 public:
     void printBoard();
     void loadStartingPosition();
-    void doMove(move move, piece promoteTo = NONE);
+    void doMove(move m);
+
     static move strToMove(std::string str);
 
     bool isBoardLegit();

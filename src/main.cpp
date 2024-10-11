@@ -18,12 +18,12 @@ int main() {
     g.isBoardLegit();
 
     //Playing a short opening with captures, a long and a short castle
-    std::string moves[18] = {"e2e4", "e7e5", "g1f3", "d7d5", "f1a6", "c8g4", "e1g1", "b8a6",
+    std::string moves[24] = {"e2e4", "e7e5", "g1f3", "d7d5", "f1a6", "c8g4", "e1g1", "b8a6",
                              "f3e5", "d8h4", "e5g4", "e8c8", "e4e5", "f7f5", "e5f6", "d5d4",
-                             "c2c4", "d4c3"};
-    for (int i = 0; i < 18; i++){
+                             "c2c4", "d4c3", "f6g7", "c3b2", "g7h8q", "c8b8", "b1c3", "b2b1r"};
+    for (int i = 0; i < 24; i++){
         move move = GameState::strToMove(moves[i]);
-        std::cout << move << std::endl;
+        std::cout << move.move << std::endl;
         g.doMove(move);
         g.printBoard();
         g.isBoardLegit();

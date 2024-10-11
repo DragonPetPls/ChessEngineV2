@@ -81,7 +81,9 @@ void GameState::loadStartingPosition() {
  * This function will change the board setup
  * it does assume that the input move is legal
  */
-void GameState::doMove(move move, piece promoteTo) {
+void GameState::doMove(move m) {
+
+    moveBitBoard move = m.move;
 
     piece movingPiece;
 
@@ -148,6 +150,13 @@ void GameState::doMove(move move, piece promoteTo) {
         }
     } else {
         enPassant = 0;
+    }
+    //Promotion
+    if((movingPiece == PAWN) && (promotionBitBoard & move)){
+        //Removing the pawn
+        pieceBoards[whoToMove][PAWN] &= ~move;
+        //Placing the piece
+        pieceBoards[whoToMove][m.promoteTo] |= move & promotionBitBoard;
     }
 
     //Switching who to move
@@ -219,7 +228,21 @@ move GameState::strToMove(std::string str) {
     }
     to = to << (8 * (str[3] - '0') - 8);
 
-    return to | from;
+    move m;
+    m.move = to | from;
+    m.promoteTo = NONE;
+
+    if(str.size() == 5){
+        switch (str[4]){
+            case 'q': m.promoteTo = QUEEN; break;
+            case 'r': m.promoteTo = ROOK; break;
+            case 'b': m.promoteTo = BISHOP; break;
+            case 'n': m.promoteTo = KNIGHT; break;
+            default: break;
+        }
+    }
+
+    return m;
 }
 
 /*
