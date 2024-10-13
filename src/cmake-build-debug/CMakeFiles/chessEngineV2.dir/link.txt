@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/chessEngineV2.dir/main.cpp.o CMakeFiles/chessEngineV2.dir/Game.cpp.o -o chessEngineV2 

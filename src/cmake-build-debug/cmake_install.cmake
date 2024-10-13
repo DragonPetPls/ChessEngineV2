@@ -1,4 +1,4 @@
-# Install script for directory: /home/fabian/CLionProjects/chessEngineV2/src
+# Install script for directory: /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/fabian/CLionProjects/chessEngineV2/src/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

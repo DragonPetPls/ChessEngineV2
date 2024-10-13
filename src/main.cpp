@@ -1,16 +1,19 @@
 #include <iostream>
+#include "Game.h"
 
-#define GAME_STATE_TESTING
+#define GAME_DEBUG
 
 int main() {
 
-#ifndef GAME_STATE_TESTING
+#ifndef GAME_DEBUG
     std::cout << "Hello, World!" << std::endl;
 #endif
 
-    // Doing all test for the gameState Class
-#ifdef GAME_STATE_TESTING
-
+    // Doing all test for the Game Class
+#ifdef GAME_DEBUG
+    Game g;
+    g.loadStartingPosition();
+    g.printGame();
 
 
 
