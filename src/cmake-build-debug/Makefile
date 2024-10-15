@@ -129,6 +129,54 @@ chessEngineV2/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/build
 .PHONY : chessEngineV2/fast
 
+Communication.o: Communication.cpp.o
+.PHONY : Communication.o
+
+# target to build an object file
+Communication.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Communication.cpp.o
+.PHONY : Communication.cpp.o
+
+Communication.i: Communication.cpp.i
+.PHONY : Communication.i
+
+# target to preprocess a source file
+Communication.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Communication.cpp.i
+.PHONY : Communication.cpp.i
+
+Communication.s: Communication.cpp.s
+.PHONY : Communication.s
+
+# target to generate assembly for a file
+Communication.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Communication.cpp.s
+.PHONY : Communication.cpp.s
+
+Engine.o: Engine.cpp.o
+.PHONY : Engine.o
+
+# target to build an object file
+Engine.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Engine.cpp.o
+.PHONY : Engine.cpp.o
+
+Engine.i: Engine.cpp.i
+.PHONY : Engine.i
+
+# target to preprocess a source file
+Engine.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Engine.cpp.i
+.PHONY : Engine.cpp.i
+
+Engine.s: Engine.cpp.s
+.PHONY : Engine.s
+
+# target to generate assembly for a file
+Engine.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Engine.cpp.s
+.PHONY : Engine.cpp.s
+
 Game.o: Game.cpp.o
 .PHONY : Game.o
 
@@ -186,6 +234,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... chessEngineV2"
+	@echo "... Communication.o"
+	@echo "... Communication.i"
+	@echo "... Communication.s"
+	@echo "... Engine.o"
+	@echo "... Engine.i"
+	@echo "... Engine.s"
 	@echo "... Game.o"
 	@echo "... Game.i"
 	@echo "... Game.s"

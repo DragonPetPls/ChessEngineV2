@@ -1,4 +1,8 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/chessEngineV2.dir/Communication.cpp.o"
+  "CMakeFiles/chessEngineV2.dir/Communication.cpp.o.d"
+  "CMakeFiles/chessEngineV2.dir/Engine.cpp.o"
+  "CMakeFiles/chessEngineV2.dir/Engine.cpp.o.d"
   "CMakeFiles/chessEngineV2.dir/Game.cpp.o"
   "CMakeFiles/chessEngineV2.dir/Game.cpp.o.d"
   "CMakeFiles/chessEngineV2.dir/main.cpp.o"

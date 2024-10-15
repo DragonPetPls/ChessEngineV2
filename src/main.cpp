@@ -3,8 +3,9 @@
 #include <sstream>
 #include <chrono>
 #include "Game.h"
+#include "Communication.h"
 
-#define GAME_DEBUG
+//#define GAME_DEBUG
 
 #ifdef GAME_DEBUG
 int perftSearch(Game &g, int depth, bool printInfo);
@@ -14,6 +15,8 @@ int main() {
 
 #ifndef GAME_DEBUG
     std::cout << "Hello, World!" << std::endl;
+    Communication c;
+    c.startCommunication();
 #endif
 
     // Doing all test for the Game Class

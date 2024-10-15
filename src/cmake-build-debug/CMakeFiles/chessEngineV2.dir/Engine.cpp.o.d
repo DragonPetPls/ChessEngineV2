@@ -1,6 +1,9 @@
-CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
- /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.cpp \
- /usr/include/stdc-predef.h /usr/include/c++/13.2.0/iostream \
+CMakeFiles/chessEngineV2.dir/Engine.cpp.o: \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.cpp \
+ /usr/include/stdc-predef.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.h \
+ /usr/include/c++/13.2.0/list \
  /usr/include/c++/13.2.0/bits/requires_hosted.h \
  /usr/include/c++/13.2.0/x86_64-unknown-linux-gnu/bits/c++config.h \
  /usr/include/c++/13.2.0/x86_64-unknown-linux-gnu/bits/os_defines.h \
@@ -12,17 +15,81 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
  /usr/include/c++/13.2.0/x86_64-unknown-linux-gnu/bits/cpu_defines.h \
- /usr/include/c++/13.2.0/ostream /usr/include/c++/13.2.0/ios \
- /usr/include/c++/13.2.0/iosfwd /usr/include/c++/13.2.0/bits/stringfwd.h \
+ /usr/include/c++/13.2.0/bits/stl_algobase.h \
+ /usr/include/c++/13.2.0/bits/functexcept.h \
+ /usr/include/c++/13.2.0/bits/exception_defines.h \
+ /usr/include/c++/13.2.0/bits/cpp_type_traits.h \
+ /usr/include/c++/13.2.0/ext/type_traits.h \
+ /usr/include/c++/13.2.0/ext/numeric_traits.h \
+ /usr/include/c++/13.2.0/bits/stl_pair.h \
+ /usr/include/c++/13.2.0/type_traits /usr/include/c++/13.2.0/bits/move.h \
+ /usr/include/c++/13.2.0/bits/utility.h \
+ /usr/include/c++/13.2.0/bits/stl_iterator_base_types.h \
+ /usr/include/c++/13.2.0/bits/stl_iterator_base_funcs.h \
+ /usr/include/c++/13.2.0/bits/concept_check.h \
+ /usr/include/c++/13.2.0/debug/assertions.h \
+ /usr/include/c++/13.2.0/bits/stl_iterator.h \
+ /usr/include/c++/13.2.0/bits/ptr_traits.h \
+ /usr/include/c++/13.2.0/debug/debug.h \
+ /usr/include/c++/13.2.0/bits/predefined_ops.h \
+ /usr/include/c++/13.2.0/bit /usr/include/c++/13.2.0/bits/allocator.h \
+ /usr/include/c++/13.2.0/x86_64-unknown-linux-gnu/bits/c++allocator.h \
+ /usr/include/c++/13.2.0/bits/new_allocator.h /usr/include/c++/13.2.0/new \
+ /usr/include/c++/13.2.0/bits/exception.h \
  /usr/include/c++/13.2.0/bits/memoryfwd.h \
- /usr/include/c++/13.2.0/bits/postypes.h /usr/include/c++/13.2.0/cwchar \
- /usr/include/wchar.h \
+ /usr/include/c++/13.2.0/bits/range_access.h \
+ /usr/include/c++/13.2.0/initializer_list \
+ /usr/include/c++/13.2.0/bits/stl_list.h \
+ /usr/include/c++/13.2.0/ext/alloc_traits.h \
+ /usr/include/c++/13.2.0/bits/alloc_traits.h \
+ /usr/include/c++/13.2.0/bits/stl_construct.h \
+ /usr/include/c++/13.2.0/bits/allocated_ptr.h \
+ /usr/include/c++/13.2.0/ext/aligned_buffer.h \
+ /usr/include/c++/13.2.0/bits/list.tcc /usr/include/c++/13.2.0/stack \
+ /usr/include/c++/13.2.0/deque \
+ /usr/include/c++/13.2.0/bits/stl_uninitialized.h \
+ /usr/include/c++/13.2.0/bits/stl_deque.h \
+ /usr/include/c++/13.2.0/bits/refwrap.h \
+ /usr/include/c++/13.2.0/bits/invoke.h \
+ /usr/include/c++/13.2.0/bits/stl_function.h \
+ /usr/include/c++/13.2.0/backward/binders.h \
+ /usr/include/c++/13.2.0/bits/deque.tcc \
+ /usr/include/c++/13.2.0/bits/stl_stack.h \
+ /usr/include/c++/13.2.0/bits/uses_allocator.h \
+ /usr/include/c++/13.2.0/queue /usr/include/c++/13.2.0/vector \
+ /usr/include/c++/13.2.0/bits/stl_vector.h \
+ /usr/include/c++/13.2.0/bits/stl_bvector.h \
+ /usr/include/c++/13.2.0/bits/functional_hash.h \
+ /usr/include/c++/13.2.0/bits/hash_bytes.h \
+ /usr/include/c++/13.2.0/bits/vector.tcc \
+ /usr/include/c++/13.2.0/bits/stl_heap.h \
+ /usr/include/c++/13.2.0/bits/stl_queue.h \
+ /usr/include/c++/13.2.0/unordered_map \
+ /usr/include/c++/13.2.0/bits/unordered_map.h \
+ /usr/include/c++/13.2.0/bits/hashtable.h \
+ /usr/include/c++/13.2.0/bits/hashtable_policy.h \
+ /usr/include/c++/13.2.0/tuple \
+ /usr/include/c++/13.2.0/bits/enable_special_members.h \
+ /usr/include/c++/13.2.0/bits/erase_if.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
+ /usr/include/c++/13.2.0/cstdint \
+ /usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/stdint.h \
+ /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
- /usr/include/x86_64-linux-gnu/bits/floatn.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/time64.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /usr/include/c++/13.2.0/iostream /usr/include/c++/13.2.0/ostream \
+ /usr/include/c++/13.2.0/ios /usr/include/c++/13.2.0/iosfwd \
+ /usr/include/c++/13.2.0/bits/stringfwd.h \
+ /usr/include/c++/13.2.0/bits/postypes.h /usr/include/c++/13.2.0/cwchar \
+ /usr/include/wchar.h /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/stddef.h \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
@@ -31,13 +98,9 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
  /usr/include/c++/13.2.0/exception \
- /usr/include/c++/13.2.0/bits/exception.h \
  /usr/include/c++/13.2.0/bits/exception_ptr.h \
- /usr/include/c++/13.2.0/bits/exception_defines.h \
  /usr/include/c++/13.2.0/bits/cxxabi_init_exception.h \
  /usr/include/c++/13.2.0/typeinfo \
- /usr/include/c++/13.2.0/bits/hash_bytes.h /usr/include/c++/13.2.0/new \
- /usr/include/c++/13.2.0/bits/move.h /usr/include/c++/13.2.0/type_traits \
  /usr/include/c++/13.2.0/bits/nested_exception.h \
  /usr/include/c++/13.2.0/bits/char_traits.h \
  /usr/include/c++/13.2.0/bits/localefwd.h \
@@ -45,9 +108,6 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
  /usr/include/c++/13.2.0/clocale /usr/include/locale.h \
  /usr/include/x86_64-linux-gnu/bits/locale.h \
  /usr/include/c++/13.2.0/cctype /usr/include/ctype.h \
- /usr/include/x86_64-linux-gnu/bits/types.h \
- /usr/include/x86_64-linux-gnu/bits/typesizes.h \
- /usr/include/x86_64-linux-gnu/bits/time64.h \
  /usr/include/x86_64-linux-gnu/bits/endian.h \
  /usr/include/x86_64-linux-gnu/bits/endianness.h \
  /usr/include/c++/13.2.0/bits/ios_base.h \
@@ -81,42 +141,15 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
  /usr/include/c++/13.2.0/x86_64-unknown-linux-gnu/bits/atomic_word.h \
  /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
  /usr/include/c++/13.2.0/bits/locale_classes.h \
- /usr/include/c++/13.2.0/string /usr/include/c++/13.2.0/bits/allocator.h \
- /usr/include/c++/13.2.0/x86_64-unknown-linux-gnu/bits/c++allocator.h \
- /usr/include/c++/13.2.0/bits/new_allocator.h \
- /usr/include/c++/13.2.0/bits/functexcept.h \
- /usr/include/c++/13.2.0/bits/cpp_type_traits.h \
+ /usr/include/c++/13.2.0/string \
  /usr/include/c++/13.2.0/bits/ostream_insert.h \
  /usr/include/c++/13.2.0/bits/cxxabi_forced.h \
- /usr/include/c++/13.2.0/bits/stl_iterator_base_funcs.h \
- /usr/include/c++/13.2.0/bits/concept_check.h \
- /usr/include/c++/13.2.0/debug/assertions.h \
- /usr/include/c++/13.2.0/bits/stl_iterator_base_types.h \
- /usr/include/c++/13.2.0/bits/stl_iterator.h \
- /usr/include/c++/13.2.0/ext/type_traits.h \
- /usr/include/c++/13.2.0/bits/ptr_traits.h \
- /usr/include/c++/13.2.0/bits/stl_function.h \
- /usr/include/c++/13.2.0/backward/binders.h \
- /usr/include/c++/13.2.0/ext/numeric_traits.h \
- /usr/include/c++/13.2.0/bits/stl_algobase.h \
- /usr/include/c++/13.2.0/bits/stl_pair.h \
- /usr/include/c++/13.2.0/bits/utility.h \
- /usr/include/c++/13.2.0/debug/debug.h \
- /usr/include/c++/13.2.0/bits/predefined_ops.h \
- /usr/include/c++/13.2.0/bit /usr/include/c++/13.2.0/bits/refwrap.h \
- /usr/include/c++/13.2.0/bits/invoke.h \
- /usr/include/c++/13.2.0/bits/range_access.h \
- /usr/include/c++/13.2.0/initializer_list \
  /usr/include/c++/13.2.0/bits/basic_string.h \
- /usr/include/c++/13.2.0/ext/alloc_traits.h \
- /usr/include/c++/13.2.0/bits/alloc_traits.h \
- /usr/include/c++/13.2.0/bits/stl_construct.h \
  /usr/include/c++/13.2.0/ext/string_conversions.h \
  /usr/include/c++/13.2.0/cstdlib /usr/include/stdlib.h \
  /usr/include/x86_64-linux-gnu/bits/waitflags.h \
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
- /usr/include/x86_64-linux-gnu/sys/types.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-intn.h /usr/include/endian.h \
+ /usr/include/x86_64-linux-gnu/sys/types.h /usr/include/endian.h \
  /usr/include/x86_64-linux-gnu/bits/byteswap.h \
  /usr/include/x86_64-linux-gnu/bits/uintn-identity.h \
  /usr/include/x86_64-linux-gnu/sys/select.h \
@@ -135,7 +168,6 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/13.2.0/bits/charconv.h \
- /usr/include/c++/13.2.0/bits/functional_hash.h \
  /usr/include/c++/13.2.0/bits/basic_string.tcc \
  /usr/include/c++/13.2.0/bits/locale_classes.tcc \
  /usr/include/c++/13.2.0/system_error \
@@ -152,32 +184,4 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
  /usr/include/c++/13.2.0/bits/locale_facets.tcc \
  /usr/include/c++/13.2.0/bits/basic_ios.tcc \
  /usr/include/c++/13.2.0/bits/ostream.tcc /usr/include/c++/13.2.0/istream \
- /usr/include/c++/13.2.0/bits/istream.tcc \
- /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.h \
- /usr/include/c++/13.2.0/list /usr/include/c++/13.2.0/bits/stl_list.h \
- /usr/include/c++/13.2.0/bits/allocated_ptr.h \
- /usr/include/c++/13.2.0/ext/aligned_buffer.h \
- /usr/include/c++/13.2.0/bits/list.tcc /usr/include/c++/13.2.0/stack \
- /usr/include/c++/13.2.0/deque \
- /usr/include/c++/13.2.0/bits/stl_uninitialized.h \
- /usr/include/c++/13.2.0/bits/stl_deque.h \
- /usr/include/c++/13.2.0/bits/deque.tcc \
- /usr/include/c++/13.2.0/bits/stl_stack.h \
- /usr/include/c++/13.2.0/bits/uses_allocator.h \
- /usr/include/c++/13.2.0/queue /usr/include/c++/13.2.0/vector \
- /usr/include/c++/13.2.0/bits/stl_vector.h \
- /usr/include/c++/13.2.0/bits/stl_bvector.h \
- /usr/include/c++/13.2.0/bits/vector.tcc \
- /usr/include/c++/13.2.0/bits/stl_heap.h \
- /usr/include/c++/13.2.0/bits/stl_queue.h \
- /usr/include/c++/13.2.0/unordered_map \
- /usr/include/c++/13.2.0/bits/unordered_map.h \
- /usr/include/c++/13.2.0/bits/hashtable.h \
- /usr/include/c++/13.2.0/bits/hashtable_policy.h \
- /usr/include/c++/13.2.0/tuple \
- /usr/include/c++/13.2.0/bits/enable_special_members.h \
- /usr/include/c++/13.2.0/bits/erase_if.h \
- /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
- /usr/include/c++/13.2.0/cstdint \
- /usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/stdint.h \
- /usr/include/stdint.h /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/c++/13.2.0/bits/istream.tcc

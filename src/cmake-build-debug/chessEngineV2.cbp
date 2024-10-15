@@ -82,6 +82,18 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
 		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.cpp">
 			<Option target="chessEngineV2"/>
 		</Unit>

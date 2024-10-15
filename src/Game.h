@@ -10,6 +10,7 @@
 #include <queue>
 #include <unordered_map>
 #include "constants.h"
+#include <iostream>
 
 struct move{
     bitboard startingSquare = 0;
@@ -52,10 +53,6 @@ private:
     color whoToMove;
     color whoNotToMove;
 
-    static int getXCoord(bitboard board);
-    static int getYCoord(bitboard board);
-    static bitboard generateBitboard(int x, int y);
-
     std::stack<pastMove> pastMoves;
 
     static std::list<coord> locatePieces(bitboard board);
@@ -85,6 +82,10 @@ public:
     bool isPositionLegal();
     void loadFen(std::string &fen);
     void printMove(move m);
+
+    static int getXCoord(bitboard board);
+    static int getYCoord(bitboard board);
+    static bitboard generateBitboard(int x, int y);
 
     const bitboard *getPieceBoards() const;
     uint8_t getCastleRights() const;

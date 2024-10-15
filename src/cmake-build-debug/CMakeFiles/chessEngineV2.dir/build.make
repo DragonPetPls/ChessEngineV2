@@ -97,19 +97,51 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/chessEngineV2.dir/Game.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.cpp -o CMakeFiles/chessEngineV2.dir/Game.cpp.s
 
+CMakeFiles/chessEngineV2.dir/Communication.cpp.o: CMakeFiles/chessEngineV2.dir/flags.make
+CMakeFiles/chessEngineV2.dir/Communication.cpp.o: /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.cpp
+CMakeFiles/chessEngineV2.dir/Communication.cpp.o: CMakeFiles/chessEngineV2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/chessEngineV2.dir/Communication.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chessEngineV2.dir/Communication.cpp.o -MF CMakeFiles/chessEngineV2.dir/Communication.cpp.o.d -o CMakeFiles/chessEngineV2.dir/Communication.cpp.o -c /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.cpp
+
+CMakeFiles/chessEngineV2.dir/Communication.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/chessEngineV2.dir/Communication.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.cpp > CMakeFiles/chessEngineV2.dir/Communication.cpp.i
+
+CMakeFiles/chessEngineV2.dir/Communication.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/chessEngineV2.dir/Communication.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.cpp -o CMakeFiles/chessEngineV2.dir/Communication.cpp.s
+
+CMakeFiles/chessEngineV2.dir/Engine.cpp.o: CMakeFiles/chessEngineV2.dir/flags.make
+CMakeFiles/chessEngineV2.dir/Engine.cpp.o: /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.cpp
+CMakeFiles/chessEngineV2.dir/Engine.cpp.o: CMakeFiles/chessEngineV2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/chessEngineV2.dir/Engine.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chessEngineV2.dir/Engine.cpp.o -MF CMakeFiles/chessEngineV2.dir/Engine.cpp.o.d -o CMakeFiles/chessEngineV2.dir/Engine.cpp.o -c /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.cpp
+
+CMakeFiles/chessEngineV2.dir/Engine.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/chessEngineV2.dir/Engine.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.cpp > CMakeFiles/chessEngineV2.dir/Engine.cpp.i
+
+CMakeFiles/chessEngineV2.dir/Engine.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/chessEngineV2.dir/Engine.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.cpp -o CMakeFiles/chessEngineV2.dir/Engine.cpp.s
+
 # Object files for target chessEngineV2
 chessEngineV2_OBJECTS = \
 "CMakeFiles/chessEngineV2.dir/main.cpp.o" \
-"CMakeFiles/chessEngineV2.dir/Game.cpp.o"
+"CMakeFiles/chessEngineV2.dir/Game.cpp.o" \
+"CMakeFiles/chessEngineV2.dir/Communication.cpp.o" \
+"CMakeFiles/chessEngineV2.dir/Engine.cpp.o"
 
 # External object files for target chessEngineV2
 chessEngineV2_EXTERNAL_OBJECTS =
 
 chessEngineV2: CMakeFiles/chessEngineV2.dir/main.cpp.o
 chessEngineV2: CMakeFiles/chessEngineV2.dir/Game.cpp.o
+chessEngineV2: CMakeFiles/chessEngineV2.dir/Communication.cpp.o
+chessEngineV2: CMakeFiles/chessEngineV2.dir/Engine.cpp.o
 chessEngineV2: CMakeFiles/chessEngineV2.dir/build.make
 chessEngineV2: CMakeFiles/chessEngineV2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable chessEngineV2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable chessEngineV2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/chessEngineV2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
