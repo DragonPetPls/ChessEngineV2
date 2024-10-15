@@ -160,7 +160,12 @@ CMakeFiles/chessEngineV2.dir/main.cpp.o: \
  /usr/include/c++/13.2.0/bits/locale_facets.tcc \
  /usr/include/c++/13.2.0/bits/basic_ios.tcc \
  /usr/include/c++/13.2.0/bits/ostream.tcc /usr/include/c++/13.2.0/istream \
- /usr/include/c++/13.2.0/bits/istream.tcc \
+ /usr/include/c++/13.2.0/bits/istream.tcc /usr/include/c++/13.2.0/vector \
+ /usr/include/c++/13.2.0/bits/stl_uninitialized.h \
+ /usr/include/c++/13.2.0/bits/stl_vector.h \
+ /usr/include/c++/13.2.0/bits/stl_bvector.h \
+ /usr/include/c++/13.2.0/bits/vector.tcc /usr/include/c++/13.2.0/sstream \
+ /usr/include/c++/13.2.0/bits/sstream.tcc \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.h \
  /usr/include/c++/13.2.0/list /usr/include/c++/13.2.0/bits/stl_list.h \
  /usr/include/c++/13.2.0/bits/allocated_ptr.h \
