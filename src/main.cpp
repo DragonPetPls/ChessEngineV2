@@ -31,6 +31,7 @@ int main() {
 
     auto start = std::chrono::high_resolution_clock::now();
 
+    std::cout << "testing..." << std::endl;
     //6 Perft test
     for(int i = 0; i < 6; i++){
         g.loadFen(fen[i]);

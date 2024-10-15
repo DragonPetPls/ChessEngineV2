@@ -501,7 +501,7 @@ std::list<move> Game::getAllPseudoLegalMoves() {
         //Knight moves
         std::list<coord> knightLocations = locatePieces(pieceBoards[whoToMove + KNIGHT]);
         for (coord c: knightLocations) {
-            std::list<bitboard> finalSquares = generateKnightFinalSquares(c);
+            std::list<bitboard> finalSquares = getKnightFinalSquares(c);
             bitboard startingSquare = generateBitboard(c.x, c.y);
             //Checking for collision on each final square
             for (bitboard finalSquare: finalSquares) {
@@ -701,18 +701,8 @@ std::list<move> Game::getAllPseudoLegalMoves() {
 /*
  * Generates all finalsquares a knight can reach from the starting square, not checking for collisions
  */
-std::list<bitboard> Game::generateKnightFinalSquares(coord knightLocation) {
-    std::list<bitboard> finalSquares;
-    int &x = knightLocation.x;
-    int &y = knightLocation.y;
-    for (int i = 0; i < 8; i++) {
-        int vx = 2 * (i == 0 || i == 1) + 1 * (i == 2 || i == 3) - 1 * (i == 4 || i == 5) - 2 * (i == 6 || i == 7);
-        int vy = 2 * (i == 2 || i == 4) + 1 * (i == 0 || i == 6) - 1 * (i == 1 || i == 7) - 2 * (i == 3 || i == 5);
-        if (x + vx >= 0 && x + vx < 8 && y + vy >= 0 && y + vy < 8) {
-            finalSquares.push_back(generateBitboard(x + vx, y + vy));
-        }
-    }
-    return finalSquares;
+std::list<bitboard>& Game::getKnightFinalSquares(coord knightLocation) {
+    return knightLookup[knightLocation.x + knightLocation.y * 8].finalSquares;
 }
 
 /*
@@ -777,15 +767,12 @@ std::list<bitboard> Game::generateDiagonalPieceFinalSquares(coord diagonalPieceL
 bool Game::isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap) {
 
     //Checking knight moves
-    std::list<bitboard> dangerousSquares = generateKnightFinalSquares(square);
-    for (bitboard dangerousSquare: dangerousSquares) {
-        if (dangerousSquare & pieceBoards[attackingColor + KNIGHT]) {
-            return true;
-        }
+    if(getKnightReachableSquares(square) & pieceBoards[attackingColor + KNIGHT]){
+        return true;
     }
 
     //Checking diagonal attack
-    dangerousSquares = generateDiagonalPieceFinalSquares(square, hitmap);
+    std::list<bitboard> dangerousSquares = generateDiagonalPieceFinalSquares(square, hitmap);
     bitboard diagonalPieces = pieceBoards[attackingColor + QUEEN] | pieceBoards[attackingColor + BISHOP];
     for (bitboard dangerousSquare: dangerousSquares) {
         if (dangerousSquare & diagonalPieces) {
@@ -1115,4 +1102,46 @@ void Game::printMove(move m) {
     }
 }
 
+/*
+ * Generates all finalsquares a knight can reach from the starting square, not checking for collisions
+ */
+std::list<bitboard> Game::generateKnightFinalSquares(coord knightLocation) {
+    std::list<bitboard> finalSquares;
+    int &x = knightLocation.x;
+    int &y = knightLocation.y;
+    for (int i = 0; i < 8; i++) {
+        int vx = 2 * (i == 0 || i == 1) + 1 * (i == 2 || i == 3) - 1 * (i == 4 || i == 5) - 2 * (i == 6 || i == 7);
+        int vy = 2 * (i == 2 || i == 4) + 1 * (i == 0 || i == 6) - 1 * (i == 1 || i == 7) - 2 * (i == 3 || i == 5);
+        if (x + vx >= 0 && x + vx < 8 && y + vy >= 0 && y + vy < 8) {
+            finalSquares.push_back(generateBitboard(x + vx, y + vy));
+        }
+    }
+    return finalSquares;
+}
 
+Game::Game() {
+    initSquaresLookup();
+}
+
+
+ /*
+  * Initialises the knight lookup table
+  */
+void Game::initSquaresLookup() {
+    for(int x = 0; x < 8; x++){
+        for(int y = 0; y < 8; y++){
+            coord c;
+            c.x = x;
+            c.y = y;
+            knightLookup[x + 8*y].finalSquares = generateKnightFinalSquares(c);
+            knightLookup[x + 8*y].allSquares = 0;
+            for(bitboard b: knightLookup[x + 8*y].finalSquares){
+                knightLookup[x + 8 * y].allSquares |= b;
+            }
+        }
+    }
+}
+
+bitboard &Game::getKnightReachableSquares(coord location) {
+    return knightLookup[location.x + location.y * 8].allSquares;
+}
