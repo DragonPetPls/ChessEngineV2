@@ -215,6 +215,9 @@ void Game::doMove(move m) {
     color x = whoToMove;
     whoToMove = whoNotToMove;
     whoNotToMove = x;
+
+    //Adding the move to last moves
+    pastMoves.push(past);
 }
 
 
@@ -297,4 +300,62 @@ int Game::getYCoord(bitboard board) {
     y += ((board & ROW_ITERATION[1]) != 0) * 2;
     y += ((board & ROW_ITERATION[2]) != 0) * 1;
     return y;
+}
+
+void Game::undoMove() {
+    //Getting the last move
+    pastMove &past = pastMoves.top();
+
+    //Removing the piece
+    pieceBoards[whoNotToMove + past.regularMove.movingPiece] &= ~past.regularMove.finalSquare;
+
+    //Placing it back to the old square;
+    pieceBoards[whoNotToMove + past.regularMove.movingPiece] |= past.regularMove.startingSquare;
+
+    //Restoring captured piece
+    if(past.capturedPiece != NONE){
+        if(past.capturedPiece != EN_PASSANT_PAWN){
+            //Restoring a regular piece
+            pieceBoards[whoToMove + past.capturedPiece] |= past.regularMove.finalSquare;
+        } else {
+            //Restoring a pawn destroyed from en passant
+            int x = getXCoord(past.regularMove.finalSquare);
+            int y = getYCoord(past.regularMove.startingSquare);
+            pieceBoards[whoToMove + PAWN] |= generateBitboard(x, y);
+        }
+    }
+
+    //Undoing castle
+    if (past.regularMove.movingPiece == KING
+        && past.regularMove.startingSquare & KING_SHORT_CASTLE_BOARD
+        && past.regularMove.finalSquare & KING_SHORT_CASTLE_BOARD) {
+        //Moving the rook
+        pieceBoards[whoNotToMove + ROOK] ^= ROOK_SHORT_CASTLE_MOVEMENT[whoNotToMove /
+                                                                    BLACK]; //Dividing by black to get to 1 if BLACK is to move
+    } else if (past.regularMove.movingPiece == KING
+               && past.regularMove.startingSquare & KING_LONG_CASTLE_BOARD
+               && past.regularMove.finalSquare & KING_LONG_CASTLE_BOARD) {
+        //Moving the rook
+        pieceBoards[whoNotToMove + ROOK] ^= ROOK_LONG_CASTLE_MOVEMENT[whoNotToMove /
+                                                                   BLACK]; //Dividing by black to get to 1 if BLACK is to move
+    }
+
+    //Undoing promotion
+    if(past.regularMove.promotion != NONE){
+        pieceBoards[whoNotToMove + past.regularMove.promotion] &= ~past.regularMove.finalSquare; //Removing the promoted piece
+    }
+
+    //Restoring castle rights
+    castleRights = past.castlingRights;
+
+    //Restoring en passant rights
+    enPassant = past.enPassant;
+
+    //Switching who is to move
+    color x = whoToMove;
+    whoToMove = whoNotToMove;
+    whoNotToMove = x;
+
+    //Popping the stack
+    pastMoves.pop();
 }

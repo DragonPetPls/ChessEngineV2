@@ -6,6 +6,7 @@
 #define CHESSENGINEV2_GAME_H
 
 #include <list>
+#include <stack>
 #include "constants.h"
 
 struct move{
@@ -35,6 +36,8 @@ private:
     static int getXCoord(bitboard board);
     static int getYCoord(bitboard board);
     static bitboard generateBitboard(int x, int y);
+
+    std::stack<pastMove> pastMoves;
 
 public:
     void printGame();
