@@ -5,6 +5,10 @@
 
 #define GAME_DEBUG
 
+#ifdef GAME_DEBUG
+int perftSearch(Game &g, int depth, bool printInfo);
+#endif
+
 int main() {
 
 #ifndef GAME_DEBUG
@@ -13,6 +17,18 @@ int main() {
 
     // Doing all test for the Game Class
 #ifdef GAME_DEBUG
+
+
+    Game g;
+    std::string fen = "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8  ";
+    g.loadFen(fen);
+    //g.loadStartingPosition();
+    g.printGame();
+    int x = perftSearch(g, 4, true);
+    std::cout << "total: " << x << std::endl;
+
+
+/*
     Game g;
     g.loadStartingPosition();
     g.printGame();
@@ -63,3 +79,41 @@ int main() {
 
     return 0;
 }
+
+#ifdef GAME_DEBUG
+
+int perftSearch(Game &g, int depth, bool printInfo){
+
+    //Exit condition
+    if(depth == 0){
+        return 1;
+    }
+    if(g.getStatus() != ON_GOING){
+        return 0;
+    }
+
+
+    //Continue searching
+    std::list<move> moves = g.getAllPseudoLegalMoves();
+    int sum = 0;
+    int x;
+    for(auto move: moves){
+        g.doMove(move);
+        if(!g.isPositionLegal()){
+            g.undoMove();
+            continue;
+        }
+        x = perftSearch(g, depth - 1, false);
+        sum += x;
+        if(printInfo){
+            //g.printGame();
+            g.printMove(move);
+            std::cout << " ";
+            std::cout << x << std::endl;
+        }
+        g.undoMove();
+    }
+    return sum;
+}
+
+#endif
