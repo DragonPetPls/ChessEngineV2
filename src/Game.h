@@ -34,9 +34,17 @@ struct coord{
     int y;
 };
 
+struct squaresLookup{
+    std::vector<bitboard> finalSquares;
+    bitboard allSquares;
+};
+
 class Game {
 private:
     std::list<uint64_t> pastHashes;
+
+    squaresLookup knightLookup[64];
+    void initSquaresLookup();
 
     bitboard pieceBoards[12];
     uint8_t castleRights;
@@ -52,9 +60,12 @@ private:
 
     static std::list<coord> locatePieces(bitboard board);
 
-    static std::list<bitboard> generateKnightFinalSquares(coord knightLocation);
-    static std::list<bitboard> generateSlidingPieceFinalSquares(coord slidingPieceLocations, bitboard hitmap);
-    static std::list<bitboard> generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap);
+    std::vector<bitboard>& getKnightFinalSquares(coord knightLocation);
+    bitboard& getKnightReachableSquares(coord location);
+    static std::vector<bitboard> generateSlidingPieceFinalSquares(coord slidingPieceLocations, bitboard hitmap);
+    static std::vector<bitboard> generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap);
+
+    std::vector<bitboard> generateKnightFinalSquares(coord knightLocation);
 
     bool isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap);
     bool isSquareUnderAttack(coord square, color attackingColor);
@@ -62,6 +73,7 @@ private:
     int counterToDraw = 0;
 
 public:
+    Game();
     void printGame();
     void loadStartingPosition();
     void doMove(move m);
