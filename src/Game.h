@@ -35,7 +35,7 @@ struct coord{
 };
 
 struct squaresLookup{
-    std::list<bitboard> finalSquares;
+    std::vector<bitboard> finalSquares;
     bitboard allSquares;
 };
 
@@ -60,18 +60,18 @@ private:
 
     static std::list<coord> locatePieces(bitboard board);
 
-    std::list<bitboard>& getKnightFinalSquares(coord knightLocation);
+    std::vector<bitboard>& getKnightFinalSquares(coord knightLocation);
     bitboard& getKnightReachableSquares(coord location);
-    static std::list<bitboard> generateSlidingPieceFinalSquares(coord slidingPieceLocations, bitboard hitmap);
-    static std::list<bitboard> generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap);
+    static std::vector<bitboard> generateSlidingPieceFinalSquares(coord slidingPieceLocations, bitboard hitmap);
+    static std::vector<bitboard> generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap);
 
-    std::list<bitboard> generateKnightFinalSquares(coord knightLocation);
+    std::vector<bitboard> generateKnightFinalSquares(coord knightLocation);
 
     bool isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap);
     bool isSquareUnderAttack(coord square, color attackingColor);
 
     int counterToDraw = 0;
-    
+
 public:
     Game();
     void printGame();

@@ -501,7 +501,7 @@ std::list<move> Game::getAllPseudoLegalMoves() {
         //Knight moves
         std::list<coord> knightLocations = locatePieces(pieceBoards[whoToMove + KNIGHT]);
         for (coord c: knightLocations) {
-            std::list<bitboard> finalSquares = getKnightFinalSquares(c);
+            std::vector<bitboard> finalSquares = getKnightFinalSquares(c);
             bitboard startingSquare = generateBitboard(c.x, c.y);
             //Checking for collision on each final square
             for (bitboard finalSquare: finalSquares) {
@@ -522,7 +522,7 @@ std::list<move> Game::getAllPseudoLegalMoves() {
         bitboard slidingPieces = pieceBoards[ROOK + whoToMove] | pieceBoards[QUEEN + whoToMove];
         std::list<coord> slidingPieceLocations = locatePieces(slidingPieces);
         for (coord c: slidingPieceLocations) {
-            std::list<bitboard> finalSquares = generateSlidingPieceFinalSquares(c, hitmap);
+            std::vector<bitboard> finalSquares = generateSlidingPieceFinalSquares(c, hitmap);
             bitboard startingSquare = generateBitboard(c.x, c.y);
 
             //Checking for collision on each final square
@@ -548,7 +548,7 @@ std::list<move> Game::getAllPseudoLegalMoves() {
         bitboard diagonalPieces = pieceBoards[BISHOP + whoToMove] | pieceBoards[QUEEN + whoToMove];
         std::list<coord> diagonalPieceLocations = locatePieces(diagonalPieces);
         for (coord c: diagonalPieceLocations) {
-            std::list<bitboard> finalSquares = generateDiagonalPieceFinalSquares(c, hitmap);
+            std::vector<bitboard> finalSquares = generateDiagonalPieceFinalSquares(c, hitmap);
             bitboard startingSquare = generateBitboard(c.x, c.y);
 
             //Checking for collision on each final square
@@ -701,15 +701,16 @@ std::list<move> Game::getAllPseudoLegalMoves() {
 /*
  * Generates all finalsquares a knight can reach from the starting square, not checking for collisions
  */
-std::list<bitboard>& Game::getKnightFinalSquares(coord knightLocation) {
+std::vector<bitboard>& Game::getKnightFinalSquares(coord knightLocation) {
     return knightLookup[knightLocation.x + knightLocation.y * 8].finalSquares;
 }
 
 /*
  * Generates all finalsquares a slidingPiece(Rook, Queens horizontal or vertical moves)
  */
-std::list<bitboard> Game::generateSlidingPieceFinalSquares(coord slidingPieceLocation, bitboard hitmap) {
-    std::list<bitboard> finalSquares;
+std::vector<bitboard> Game::generateSlidingPieceFinalSquares(coord slidingPieceLocation, bitboard hitmap) {
+    std::vector<bitboard> finalSquares;
+    finalSquares.reserve(14);
     int &x = slidingPieceLocation.x;
     int &y = slidingPieceLocation.y;
     for (int i = 0; i < 4; i++) {
@@ -736,8 +737,9 @@ std::list<bitboard> Game::generateSlidingPieceFinalSquares(coord slidingPieceLoc
     return finalSquares;
 }
 
-std::list<bitboard> Game::generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap) {
-    std::list<bitboard> finalSquares;
+std::vector<bitboard> Game::generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap) {
+    std::vector<bitboard> finalSquares;
+    finalSquares.reserve(14);
     int &x = diagonalPieceLocations.x;
     int &y = diagonalPieceLocations.y;
     for (int i = 0; i < 4; i++) {
@@ -772,7 +774,7 @@ bool Game::isSquareUnderAttack(coord square, color attackingColor, bitboard hitm
     }
 
     //Checking diagonal attack
-    std::list<bitboard> dangerousSquares = generateDiagonalPieceFinalSquares(square, hitmap);
+    std::vector<bitboard> dangerousSquares = generateDiagonalPieceFinalSquares(square, hitmap);
     bitboard diagonalPieces = pieceBoards[attackingColor + QUEEN] | pieceBoards[attackingColor + BISHOP];
     for (bitboard dangerousSquare: dangerousSquares) {
         if (dangerousSquare & diagonalPieces) {
@@ -1105,8 +1107,8 @@ void Game::printMove(move m) {
 /*
  * Generates all finalsquares a knight can reach from the starting square, not checking for collisions
  */
-std::list<bitboard> Game::generateKnightFinalSquares(coord knightLocation) {
-    std::list<bitboard> finalSquares;
+std::vector<bitboard> Game::generateKnightFinalSquares(coord knightLocation) {
+    std::vector<bitboard> finalSquares;
     int &x = knightLocation.x;
     int &y = knightLocation.y;
     for (int i = 0; i < 8; i++) {
