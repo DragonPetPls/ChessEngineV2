@@ -391,12 +391,14 @@ std::list<coord> Game::locatePieces(bitboard board) {
     std::list<coord> locations;
 
     for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-            if ((board >> (7 - x + 8 * y)) & 1) {
-                coord c;
-                c.x = x;
-                c.y = y;
-                locations.push_back(c);
+        if(COLLOMS[x] & board){
+            for (int y = 0; y < 8; y++) {
+                if ((board >> (7 - x + 8 * y)) & 1) {
+                    coord c;
+                    c.x = x;
+                    c.y = y;
+                    locations.push_back(c);
+                }
             }
         }
     }
@@ -864,7 +866,7 @@ status Game::getStatus() {
     }
 
     //Checking for stalemate or checkmate
-    bool isCheck = isKingSafe(whoToMove);
+    bool isCheck = !isKingSafe(whoToMove);
     if (isCheck) {
         return CHECKMATE;
     } else {

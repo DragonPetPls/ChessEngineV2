@@ -5,7 +5,7 @@
 #include "Game.h"
 #include "Communication.h"
 
-//#define GAME_DEBUG
+#define GAME_DEBUG
 
 #ifdef GAME_DEBUG
 int perftSearch(Game &g, int depth, bool printInfo);
