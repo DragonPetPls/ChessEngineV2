@@ -12,7 +12,7 @@
 typedef uint64_t bitboard;
 
 struct blocker{
-    std::list<bitboard> finalSquares;
+    std::vector<bitboard> finalSquares;
     bitboard allSquares = 0;
     bool isInit = false;
 };
@@ -100,9 +100,9 @@ private:
 public:
     magicBitboards();
     void calculateStraightMagicNumbers();
-    std::list<bitboard> generateStraightFinalSquares(int x, int y, bitboard hitmap);
+    std::vector<bitboard> generateStraightFinalSquares(int x, int y, bitboard hitmap);
 
-    std::list<bitboard> getStraightFinalSquares(int x, int y, bitboard hitmap);
+    std::vector<bitboard> getStraightFinalSquares(int x, int y, bitboard hitmap);
     bitboard getStraightAllFinalSquares(int x, int y, bitboard hitmap);
 };
 

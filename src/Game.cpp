@@ -524,7 +524,7 @@ std::list<move> Game::getAllPseudoLegalMoves() {
         bitboard slidingPieces = pieceBoards[ROOK + whoToMove] | pieceBoards[QUEEN + whoToMove];
         std::list<coord> slidingPieceLocations = locatePieces(slidingPieces);
         for (coord c: slidingPieceLocations) {
-            std::list<bitboard> finalSquares = magic.getStraightFinalSquares(c.x, c.y, hitmap);
+            std::vector<bitboard> finalSquares = magic.getStraightFinalSquares(c.x, c.y, hitmap);
             bitboard startingSquare = generateBitboard(c.x, c.y);
 
             //Checking for collision on each final square

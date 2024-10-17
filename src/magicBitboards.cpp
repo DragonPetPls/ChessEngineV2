@@ -147,9 +147,9 @@ void magicBitboards::calculateStraightSquare(int x, int y) {
 /*
 * Generates all finalsquares a slidingPiece(Rook, Queens horizontal or vertical moves)
 */
-std::list<bitboard> magicBitboards::generateStraightFinalSquares(int x, int y, bitboard hitmap) {
+std::vector<bitboard> magicBitboards::generateStraightFinalSquares(int x, int y, bitboard hitmap) {
 
-    std::list<bitboard> finalSquares;
+    std::vector<bitboard> finalSquares;
     for (int i = 0; i < 4; i++) {
         int vx = 1 * (i == 0) - 1 * (i == 1);
         int vy = 1 * (i == 2) - 1 * (i == 3);
@@ -213,7 +213,7 @@ std::vector<bitboard> magicBitboards::generateAllBitboard(int x, int y) {
     return bitboards;
 }
 
-std::list<bitboard> magicBitboards::getStraightFinalSquares(int x, int y, bitboard hitmap) {
+std::vector<bitboard> magicBitboards::getStraightFinalSquares(int x, int y, bitboard hitmap) {
     uint64_t magicNumber = straightSquares[x + 8 * y].magicNumber;
     int index = straightSquares[x + 8 * y].index;
     bitboard  b = hitmap & straightSquares[x + 8 * y].overlay;
