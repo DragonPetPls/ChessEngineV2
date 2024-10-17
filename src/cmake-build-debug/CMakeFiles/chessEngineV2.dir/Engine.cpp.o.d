@@ -82,6 +82,7 @@ CMakeFiles/chessEngineV2.dir/Engine.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h \
  /usr/include/c++/13.2.0/iostream /usr/include/c++/13.2.0/ostream \
  /usr/include/c++/13.2.0/ios /usr/include/c++/13.2.0/iosfwd \
  /usr/include/c++/13.2.0/bits/stringfwd.h \

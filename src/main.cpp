@@ -4,8 +4,10 @@
 #include <chrono>
 #include "Game.h"
 #include "Communication.h"
+#include "magicBitboards.h"
 
 #define GAME_DEBUG
+//#define MAGIC_DEBUG
 
 #ifdef GAME_DEBUG
 int perftSearch(Game &g, int depth, bool printInfo);
@@ -14,9 +16,11 @@ int perftSearch(Game &g, int depth, bool printInfo);
 int main() {
 
 #ifndef GAME_DEBUG
+#ifndef MAGIC_DEBUG
     std::cout << "Hello, World!" << std::endl;
     Communication c;
     c.startCommunication();
+#endif
 #endif
 
     // Doing all test for the Game Class
@@ -50,6 +54,12 @@ int main() {
     std::chrono::duration<double> elapsed = end - start;
     std::cout << "The test took " << elapsed.count() << " seconds" << std::endl;
 
+#endif
+
+
+#ifdef MAGIC_DEBUG
+    magicBitboards mb;
+    mb.calculateStraightMagicNumbers();
 #endif
 
     return 0;

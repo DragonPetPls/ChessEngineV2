@@ -190,6 +190,7 @@ CMakeFiles/chessEngineV2.dir/Communication.cpp.o: \
  /usr/include/c++/13.2.0/bits/enable_special_members.h \
  /usr/include/c++/13.2.0/bits/erase_if.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h \
  /usr/include/c++/13.2.0/condition_variable \
  /usr/include/c++/13.2.0/bits/shared_ptr.h \
  /usr/include/c++/13.2.0/bits/shared_ptr_base.h \

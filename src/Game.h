@@ -10,6 +10,7 @@
 #include <queue>
 #include <unordered_map>
 #include "constants.h"
+#include "magicBitboards.h"
 #include <iostream>
 
 struct move{
@@ -42,6 +43,7 @@ struct squaresLookup{
 
 class Game {
 private:
+    magicBitboards magic;
     std::list<uint64_t> pastHashes;
 
     squaresLookup knightLookup[64];

@@ -524,7 +524,7 @@ std::list<move> Game::getAllPseudoLegalMoves() {
         bitboard slidingPieces = pieceBoards[ROOK + whoToMove] | pieceBoards[QUEEN + whoToMove];
         std::list<coord> slidingPieceLocations = locatePieces(slidingPieces);
         for (coord c: slidingPieceLocations) {
-            std::vector<bitboard> finalSquares = generateSlidingPieceFinalSquares(c, hitmap);
+            std::list<bitboard> finalSquares = magic.getStraightFinalSquares(c.x, c.y, hitmap);
             bitboard startingSquare = generateBitboard(c.x, c.y);
 
             //Checking for collision on each final square
@@ -785,13 +785,12 @@ bool Game::isSquareUnderAttack(coord square, color attackingColor, bitboard hitm
     }
 
     //Checking sliding attacks
-    dangerousSquares = generateSlidingPieceFinalSquares(square, hitmap);
+    bitboard dangerousSquare = magic.getStraightAllFinalSquares(square.x, square.y, hitmap);
     bitboard slidingPieces = pieceBoards[attackingColor + QUEEN] | pieceBoards[attackingColor + ROOK];
-    for (bitboard dangerousSquare: dangerousSquares) {
-        if (dangerousSquare & slidingPieces) {
-            return true;
-        }
+    if (dangerousSquare & slidingPieces) {
+        return true;
     }
+
 
     //Checking pawn attacks
     int vy = -1 * (attackingColor == WHITE) + 1 * (attackingColor == BLACK);
