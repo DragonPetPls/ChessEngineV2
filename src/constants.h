@@ -43,6 +43,8 @@
 #define CHECKMATE 1
 #define DRAW 2
 
+#define NUMBER_OF_HASH_KEYS 1000
+
 typedef uint64_t bitboard;
 typedef uint8_t piece;
 typedef uint8_t status;
