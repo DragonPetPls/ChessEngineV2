@@ -57,11 +57,10 @@ private:
 
     std::stack<pastMove> pastMoves;
 
-    static std::list<coord> locatePieces(bitboard board);
+    static std::vector<coord> locatePieces(bitboard board);
 
     std::vector<bitboard>& getKnightFinalSquares(coord knightLocation);
     bitboard& getKnightReachableSquares(coord location);
-    static std::vector<bitboard> generateSlidingPieceFinalSquares(coord slidingPieceLocations, bitboard hitmap);
     static std::vector<bitboard> generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap);
 
     std::vector<bitboard> generateKnightFinalSquares(coord knightLocation);

@@ -10,6 +10,7 @@
 //#define MAGIC_DEBUG
 
 #ifdef GAME_DEBUG
+int nodesSearched = 0;
 int perftSearch(Game &g, int depth, bool printInfo);
 #endif
 
@@ -36,14 +37,13 @@ int main() {
     int depth[6] = {5, 4, 5, 4, 4, 4};
     int solution[6] = {4865609, 4085603, 674624, 422333, 2103487, 3894594};
 
-    int total = 0;
+    nodesSearched = 0;
     auto start = std::chrono::high_resolution_clock::now();
     std::cout << "testing..." << std::endl;
     //6 Perft test
     for(int i = 0; i < 6; i++){
         g.loadFen(fen[i]);
         int result = perftSearch(g, depth[i], false);
-        total += result;
         if(result == solution[i]){
             std::cout << "Test " << i << " successful" << std::endl;
         } else {
@@ -54,15 +54,16 @@ int main() {
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
     std::cout << "The test took " << elapsed.count() << " seconds" << std::endl;
-    std::cout << total << " nodes were searched." << std::endl;
-    std::cout << total * 1.0/ elapsed.count() << " nodes per second" << std::endl;
+    std::cout << nodesSearched << " nodes were searched." << std::endl;
+    std::cout << nodesSearched / elapsed.count() << " nodes per second" << std::endl;
 
 #endif
 
 
 #ifdef MAGIC_DEBUG
     magicBitboards mb;
-    mb.calculateStraightMagicNumbers();
+    //mb.calculateStraightMagicNumbers();
+    //mb.calculateDiagonalMagicNumbers();
 #endif
 
     return 0;
@@ -71,7 +72,7 @@ int main() {
 #ifdef GAME_DEBUG
 
 int perftSearch(Game &g, int depth, bool printInfo){
-
+    nodesSearched++;
     //Exit condition
     if(depth == 0){
         return 1;
