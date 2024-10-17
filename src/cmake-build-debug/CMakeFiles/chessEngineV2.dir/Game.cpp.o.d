@@ -180,4 +180,5 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
  /usr/include/c++/13.2.0/cstdint \
  /usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/stdint.h \
- /usr/include/stdint.h /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/stdint.h /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h

@@ -8,4 +8,6 @@ add_executable(chessEngineV2 main.cpp
         constants.h
         Game.cpp
         Communication.cpp
-        Engine.cpp)
+        Engine.cpp
+        magicBitboards.h
+        magicBitboards.cpp)

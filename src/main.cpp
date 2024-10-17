@@ -4,19 +4,24 @@
 #include <chrono>
 #include "Game.h"
 #include "Communication.h"
+#include "magicBitboards.h"
 
-//#define GAME_DEBUG
+#define GAME_DEBUG
+//#define MAGIC_DEBUG
 
 #ifdef GAME_DEBUG
+int nodesSearched = 0;
 int perftSearch(Game &g, int depth, bool printInfo);
 #endif
 
 int main() {
 
 #ifndef GAME_DEBUG
+#ifndef MAGIC_DEBUG
     std::cout << "Hello, World!" << std::endl;
     Communication c;
     c.startCommunication();
+#endif
 #endif
 
     // Doing all test for the Game Class
@@ -32,8 +37,8 @@ int main() {
     int depth[6] = {5, 4, 5, 4, 4, 4};
     int solution[6] = {4865609, 4085603, 674624, 422333, 2103487, 3894594};
 
+    nodesSearched = 0;
     auto start = std::chrono::high_resolution_clock::now();
-
     std::cout << "testing..." << std::endl;
     //6 Perft test
     for(int i = 0; i < 6; i++){
@@ -49,7 +54,16 @@ int main() {
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
     std::cout << "The test took " << elapsed.count() << " seconds" << std::endl;
+    std::cout << nodesSearched << " nodes were searched." << std::endl;
+    std::cout << nodesSearched / elapsed.count() << " nodes per second" << std::endl;
 
+#endif
+
+
+#ifdef MAGIC_DEBUG
+    magicBitboards mb;
+    //mb.calculateStraightMagicNumbers();
+    //mb.calculateDiagonalMagicNumbers();
 #endif
 
     return 0;
@@ -58,7 +72,7 @@ int main() {
 #ifdef GAME_DEBUG
 
 int perftSearch(Game &g, int depth, bool printInfo){
-
+    nodesSearched++;
     //Exit condition
     if(depth == 0){
         return 1;

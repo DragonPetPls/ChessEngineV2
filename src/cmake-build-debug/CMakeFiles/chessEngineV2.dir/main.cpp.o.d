@@ -183,6 +183,7 @@ CMakeFiles/chessEngineV2.dir/main.cpp.o: \
  /usr/include/c++/13.2.0/bits/enable_special_members.h \
  /usr/include/c++/13.2.0/bits/erase_if.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.h \
  /usr/include/c++/13.2.0/mutex /usr/include/c++/13.2.0/bits/std_mutex.h \
  /usr/include/c++/13.2.0/bits/unique_lock.h \

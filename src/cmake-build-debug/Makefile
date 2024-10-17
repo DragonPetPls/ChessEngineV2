@@ -201,6 +201,30 @@ Game.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Game.cpp.s
 .PHONY : Game.cpp.s
 
+magicBitboards.o: magicBitboards.cpp.o
+.PHONY : magicBitboards.o
+
+# target to build an object file
+magicBitboards.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/magicBitboards.cpp.o
+.PHONY : magicBitboards.cpp.o
+
+magicBitboards.i: magicBitboards.cpp.i
+.PHONY : magicBitboards.i
+
+# target to preprocess a source file
+magicBitboards.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/magicBitboards.cpp.i
+.PHONY : magicBitboards.cpp.i
+
+magicBitboards.s: magicBitboards.cpp.s
+.PHONY : magicBitboards.s
+
+# target to generate assembly for a file
+magicBitboards.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/magicBitboards.cpp.s
+.PHONY : magicBitboards.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -243,6 +267,9 @@ help:
 	@echo "... Game.o"
 	@echo "... Game.i"
 	@echo "... Game.s"
+	@echo "... magicBitboards.o"
+	@echo "... magicBitboards.i"
+	@echo "... magicBitboards.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

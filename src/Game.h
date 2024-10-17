@@ -10,6 +10,7 @@
 #include <queue>
 #include <unordered_map>
 #include "constants.h"
+#include "magicBitboards.h"
 #include <iostream>
 
 struct move{
@@ -42,9 +43,13 @@ struct squaresLookup{
 
 class Game {
 private:
+    uint64_t hashBoards[NUMBER_OF_HASH_KEYS];
+
+    magicBitboards magic;
     std::list<uint64_t> pastHashes;
 
     squaresLookup knightLookup[64];
+    squaresLookup kingLookup[64];
     void initSquaresLookup();
 
     bitboard pieceBoards[12];
@@ -55,14 +60,15 @@ private:
 
     std::stack<pastMove> pastMoves;
 
-    static std::list<coord> locatePieces(bitboard board);
+    static std::vector<coord> locatePieces(bitboard board);
 
-    std::vector<bitboard>& getKnightFinalSquares(coord knightLocation);
+    std::vector<bitboard>& getKnightFinalSquares(coord location);
     bitboard& getKnightReachableSquares(coord location);
-    static std::vector<bitboard> generateSlidingPieceFinalSquares(coord slidingPieceLocations, bitboard hitmap);
-    static std::vector<bitboard> generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap);
+    std::vector<bitboard>& getKingFinalSquares(coord location);
+    bitboard& getKingReachableSquares(coord location);
 
     std::vector<bitboard> generateKnightFinalSquares(coord knightLocation);
+    std::vector<bitboard> generateKingFinalSquares(coord kingLocation);
 
     bool isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap);
     bool isSquareUnderAttack(coord square, color attackingColor);

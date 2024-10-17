@@ -387,16 +387,18 @@ void Game::undoMove() {
 /*
  * Locates all pieces on the bitboard
  */
-std::list<coord> Game::locatePieces(bitboard board) {
-    std::list<coord> locations;
-
+std::vector<coord> Game::locatePieces(bitboard board) {
+    std::vector<coord> locations;
+    locations.reserve(8);
     for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-            if ((board >> (7 - x + 8 * y)) & 1) {
-                coord c;
-                c.x = x;
-                c.y = y;
-                locations.push_back(c);
+        if(COLLOMS[x] & board){
+            for (int y = 0; y < 8; y++) {
+                if ((board >> (7 - x + 8 * y)) & 1) {
+                    coord c;
+                    c.x = x;
+                    c.y = y;
+                    locations.push_back(c);
+                }
             }
         }
     }
@@ -419,7 +421,7 @@ std::list<move> Game::getAllPseudoLegalMoves() {
 
     {
         //Generating pawn moves
-        std::list<coord> pawnLocations = locatePieces(pieceBoards[whoToMove + PAWN]);
+        auto pawnLocations = locatePieces(pieceBoards[whoToMove + PAWN]);
         int vy = 1 - 2 * (whoToMove == BLACK);
         for (coord &c: pawnLocations) {
             bitboard startingSquare = generateBitboard(c.x, c.y);
@@ -499,7 +501,7 @@ std::list<move> Game::getAllPseudoLegalMoves() {
 
     {
         //Knight moves
-        std::list<coord> knightLocations = locatePieces(pieceBoards[whoToMove + KNIGHT]);
+        auto knightLocations = locatePieces(pieceBoards[whoToMove + KNIGHT]);
         for (coord c: knightLocations) {
             std::vector<bitboard> finalSquares = getKnightFinalSquares(c);
             bitboard startingSquare = generateBitboard(c.x, c.y);
@@ -520,9 +522,9 @@ std::list<move> Game::getAllPseudoLegalMoves() {
     {
         //Straight sliding pieces
         bitboard slidingPieces = pieceBoards[ROOK + whoToMove] | pieceBoards[QUEEN + whoToMove];
-        std::list<coord> slidingPieceLocations = locatePieces(slidingPieces);
+        auto slidingPieceLocations = locatePieces(slidingPieces);
         for (coord c: slidingPieceLocations) {
-            std::vector<bitboard> finalSquares = generateSlidingPieceFinalSquares(c, hitmap);
+            std::vector<bitboard> finalSquares = magic.getStraightFinalSquares(c.x, c.y, hitmap);
             bitboard startingSquare = generateBitboard(c.x, c.y);
 
             //Checking for collision on each final square
@@ -546,9 +548,10 @@ std::list<move> Game::getAllPseudoLegalMoves() {
     {
         //Diagonal pieces
         bitboard diagonalPieces = pieceBoards[BISHOP + whoToMove] | pieceBoards[QUEEN + whoToMove];
-        std::list<coord> diagonalPieceLocations = locatePieces(diagonalPieces);
+        auto diagonalPieceLocations = locatePieces(diagonalPieces);
         for (coord c: diagonalPieceLocations) {
-            std::vector<bitboard> finalSquares = generateDiagonalPieceFinalSquares(c, hitmap);
+            std::vector<bitboard> finalSquares = magic.getDiagonalFinalSquares(c.x, c.y, hitmap);
+                    // generateDiagonalPieceFinalSquares(c, hitmap);
             bitboard startingSquare = generateBitboard(c.x, c.y);
 
             //Checking for collision on each final square
@@ -571,14 +574,11 @@ std::list<move> Game::getAllPseudoLegalMoves() {
 
     {
         //King moves
-        int x = getXCoord(pieceBoards[KING + whoToMove]);
-        int y = getYCoord(pieceBoards[KING + whoToMove]);
-        for (int i = 0; i < 8; i++) {
-            int vx = 1 * (i < 3) - 1 * (i >= 5);
-            int vy = 1 * (i == 0 || i == 3 | i == 5) - 1 * (i == 2 || i == 4 || i == 7);
-            if (x + vx >= 0 && x + vx < 8 && y + vy >= 0 && y + vy < 8) {
-                bitboard finalSquare = generateBitboard(x + vx, y + vy);
-
+        coord location;
+        location.x = getXCoord(pieceBoards[KING + whoToMove]);
+        location.y = getYCoord(pieceBoards[KING + whoToMove]);
+        auto finalSquares = generateKingFinalSquares(location);
+        for(bitboard finalSquare: finalSquares){
                 //Checking for collision
                 if (!(finalSquare & ownHitmap)) {
                     move m;
@@ -588,7 +588,6 @@ std::list<move> Game::getAllPseudoLegalMoves() {
                     m.promotion = NONE;
                     pseudoLegalMoves.push_back(m);
                 }
-            }
         }
         //Castle
         if (whoToMove == WHITE) {
@@ -705,67 +704,6 @@ std::vector<bitboard>& Game::getKnightFinalSquares(coord knightLocation) {
     return knightLookup[knightLocation.x + knightLocation.y * 8].finalSquares;
 }
 
-/*
- * Generates all finalsquares a slidingPiece(Rook, Queens horizontal or vertical moves)
- */
-std::vector<bitboard> Game::generateSlidingPieceFinalSquares(coord slidingPieceLocation, bitboard hitmap) {
-    std::vector<bitboard> finalSquares;
-    finalSquares.reserve(14);
-    int &x = slidingPieceLocation.x;
-    int &y = slidingPieceLocation.y;
-    for (int i = 0; i < 4; i++) {
-        int vx = 1 * (i == 0) - 1 * (i == 1);
-        int vy = 1 * (i == 2) - 1 * (i == 3);
-
-        //Iterating over distances
-        for (int distance = 1; distance < 8; distance++) {
-            if (x + vx * distance >= 0 && x + vx * distance < 8 && y + vy * distance >= 0 && y + vy * distance < 8) {
-
-                bitboard finalSquare = generateBitboard(x + vx * distance, y + vy * distance);
-                finalSquares.push_back(finalSquare);
-
-                //Checking for collisions
-                if (hitmap & finalSquare) {
-                    break;
-                }
-
-            } else {
-                break;
-            }
-        }
-    }
-    return finalSquares;
-}
-
-std::vector<bitboard> Game::generateDiagonalPieceFinalSquares(coord diagonalPieceLocations, bitboard hitmap) {
-    std::vector<bitboard> finalSquares;
-    finalSquares.reserve(14);
-    int &x = diagonalPieceLocations.x;
-    int &y = diagonalPieceLocations.y;
-    for (int i = 0; i < 4; i++) {
-        int vx = 1 * (i == 0 || i == 1) - 1 * (i == 2 || i == 3);
-        int vy = 1 * (i == 0 || i == 2) - 1 * (i == 1 || i == 3);
-
-        //Iterating over distances
-        for (int distance = 1; distance < 8; distance++) {
-            if (x + vx * distance >= 0 && x + vx * distance < 8 && y + vy * distance >= 0 && y + vy * distance < 8) {
-
-                bitboard finalSquare = generateBitboard(x + vx * distance, y + vy * distance);
-                finalSquares.push_back(finalSquare);
-
-                //Checking for collisions
-                if (hitmap & finalSquare) {
-                    break;
-                }
-
-            } else {
-                break;
-            }
-        }
-    }
-    return finalSquares;
-}
-
 bool Game::isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap) {
 
     //Checking knight moves
@@ -774,21 +712,24 @@ bool Game::isSquareUnderAttack(coord square, color attackingColor, bitboard hitm
     }
 
     //Checking diagonal attack
-    std::vector<bitboard> dangerousSquares = generateDiagonalPieceFinalSquares(square, hitmap);
+    bitboard dangerousSquares = magic.getDiagonalAllFinalSquares(square.x, square.y, hitmap);
     bitboard diagonalPieces = pieceBoards[attackingColor + QUEEN] | pieceBoards[attackingColor + BISHOP];
-    for (bitboard dangerousSquare: dangerousSquares) {
-        if (dangerousSquare & diagonalPieces) {
-            return true;
-        }
+    if (dangerousSquares & diagonalPieces) {
+        return true;
     }
 
+
     //Checking sliding attacks
-    dangerousSquares = generateSlidingPieceFinalSquares(square, hitmap);
+    bitboard dangerousSquare = magic.getStraightAllFinalSquares(square.x, square.y, hitmap);
     bitboard slidingPieces = pieceBoards[attackingColor + QUEEN] | pieceBoards[attackingColor + ROOK];
-    for (bitboard dangerousSquare: dangerousSquares) {
-        if (dangerousSquare & slidingPieces) {
-            return true;
-        }
+    if (dangerousSquare & slidingPieces) {
+        return true;
+    }
+
+    //Checking king attacks
+    dangerousSquares = getKingReachableSquares(square);
+    if(dangerousSquares & pieceBoards[KING + attackingColor]){
+        return true;
     }
 
     //Checking pawn attacks
@@ -864,7 +805,7 @@ status Game::getStatus() {
     }
 
     //Checking for stalemate or checkmate
-    bool isCheck = isKingSafe(whoToMove);
+    bool isCheck = !isKingSafe(whoToMove);
     if (isCheck) {
         return CHECKMATE;
     } else {
@@ -1127,7 +1068,7 @@ Game::Game() {
 
 
  /*
-  * Initialises the knight lookup table
+  * Initialises the knight and king lookup table
   */
 void Game::initSquaresLookup() {
     for(int x = 0; x < 8; x++){
@@ -1135,15 +1076,50 @@ void Game::initSquaresLookup() {
             coord c;
             c.x = x;
             c.y = y;
+
+            //Knight
             knightLookup[x + 8*y].finalSquares = generateKnightFinalSquares(c);
             knightLookup[x + 8*y].allSquares = 0;
             for(bitboard b: knightLookup[x + 8*y].finalSquares){
                 knightLookup[x + 8 * y].allSquares |= b;
             }
+
+            //king
+            kingLookup[x + 8 * y].finalSquares = generateKingFinalSquares(c);
+            kingLookup[x + 8 * y].allSquares = 0;
+            for(bitboard b: kingLookup[x + 8*y].finalSquares){
+                kingLookup[x + 8 * y].allSquares |= b;
+            }
         }
     }
+
+
 }
 
 bitboard &Game::getKnightReachableSquares(coord location) {
     return knightLookup[location.x + location.y * 8].allSquares;
+}
+
+std::vector<bitboard> Game::generateKingFinalSquares(coord kingLocation) {
+    std::vector<bitboard> finalSquares;
+    finalSquares.reserve(8);
+    int &x = kingLocation.x;
+    int &y = kingLocation.y;
+    for (int i = 0; i < 8; i++) {
+        int vx = 1 * (i < 3) - 1 * (i >= 5);
+        int vy = 1 * (i == 0 || i == 3 | i == 5) - 1 * (i == 2 || i == 4 || i == 7);
+        if (x + vx >= 0 && x + vx < 8 && y + vy >= 0 && y + vy < 8) {
+            bitboard finalSquare = generateBitboard(x + vx, y + vy);
+            finalSquares.push_back(finalSquare);
+        }
+    }
+    return finalSquares;
+}
+
+bitboard &Game::getKingReachableSquares(coord location) {
+    return kingLookup[location.x + 8 * location.y].allSquares;
+}
+
+std::vector<bitboard> &Game::getKingFinalSquares(coord location) {
+    return kingLookup[location.x + 8 * location.y].finalSquares;
 }
