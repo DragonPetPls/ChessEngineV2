@@ -65,10 +65,8 @@ class Game {
 private:
     uint64_t hashBoards[NUMBER_OF_HASH_KEYS];
 
-    magicBitboards magic;
     std::list<uint64_t> pastHashes;
 
-    squaresLookup knightLookup[64];
     squaresLookup kingLookup[64];
     void initSquaresLookup();
 
@@ -79,8 +77,6 @@ private:
     color whoNotToMove;
 
     std::stack<pastMove> pastMoves;
-
-    static std::vector<coord> locatePieces(bitboard board);
 
     std::vector<bitboard>& getKnightFinalSquares(coord location);
     bitboard& getKnightReachableSquares(coord location);
@@ -96,19 +92,23 @@ private:
     int counterToDraw = 0;
 
 public:
+    magicBitboards magic;
+    squaresLookup knightLookup[64];
+
     Game();
     void printGame();
     void loadStartingPosition();
     void doMove(move m);
     move stringToMove(std::string move);
     void undoMove();
-    std::list<move> getAllPseudoLegalMoves();
+    std::vector<move> getAllPseudoLegalMoves();
     status getStatus();
     bool isKingSafe(color whichKing);
     bool isPositionLegal();
     void loadFen(std::string &fen);
     void printMove(move m);
 
+    static std::vector<coord> locatePieces(bitboard board);
     static int getXCoord(bitboard board);
     static int getYCoord(bitboard board);
     static bitboard generateBitboard(int x, int y);

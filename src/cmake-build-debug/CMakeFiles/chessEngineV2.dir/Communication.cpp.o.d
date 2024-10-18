@@ -177,6 +177,9 @@ CMakeFiles/chessEngineV2.dir/Communication.cpp.o: \
  /usr/include/c++/13.2.0/mutex /usr/include/c++/13.2.0/bits/std_mutex.h \
  /usr/include/c++/13.2.0/bits/unique_lock.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.h \
+ /usr/include/c++/13.2.0/atomic \
+ /usr/include/c++/13.2.0/bits/atomic_base.h \
+ /usr/include/c++/13.2.0/bits/atomic_lockfree_defines.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.h \
  /usr/include/c++/13.2.0/list /usr/include/c++/13.2.0/bits/stl_list.h \
  /usr/include/c++/13.2.0/bits/allocated_ptr.h \
@@ -191,6 +194,7 @@ CMakeFiles/chessEngineV2.dir/Communication.cpp.o: \
  /usr/include/c++/13.2.0/bits/erase_if.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h \
  /usr/include/c++/13.2.0/condition_variable \
  /usr/include/c++/13.2.0/bits/shared_ptr.h \
  /usr/include/c++/13.2.0/bits/shared_ptr_base.h \

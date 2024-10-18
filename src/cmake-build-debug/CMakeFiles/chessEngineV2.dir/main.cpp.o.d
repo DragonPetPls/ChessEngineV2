@@ -188,6 +188,10 @@ CMakeFiles/chessEngineV2.dir/main.cpp.o: \
  /usr/include/c++/13.2.0/mutex /usr/include/c++/13.2.0/bits/std_mutex.h \
  /usr/include/c++/13.2.0/bits/unique_lock.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.h \
+ /usr/include/c++/13.2.0/atomic \
+ /usr/include/c++/13.2.0/bits/atomic_base.h \
+ /usr/include/c++/13.2.0/bits/atomic_lockfree_defines.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h \
  /usr/include/c++/13.2.0/condition_variable \
  /usr/include/c++/13.2.0/bits/shared_ptr.h \
  /usr/include/c++/13.2.0/bits/shared_ptr_base.h \

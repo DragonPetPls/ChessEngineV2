@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/chessEngineV2.dir/magicBitboards.cpp.o.d"
   "CMakeFiles/chessEngineV2.dir/main.cpp.o"
   "CMakeFiles/chessEngineV2.dir/main.cpp.o.d"
+  "CMakeFiles/chessEngineV2.dir/moveOrderer.cpp.o"
+  "CMakeFiles/chessEngineV2.dir/moveOrderer.cpp.o.d"
   "chessEngineV2"
   "chessEngineV2.pdb"
 )

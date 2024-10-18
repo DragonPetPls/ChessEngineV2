@@ -103,6 +103,9 @@
 		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h">
 			<Option target="chessEngineV2"/>
 		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
 		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.cpp">
 			<Option target="chessEngineV2"/>
 		</Unit>
@@ -110,6 +113,12 @@
 			<Option target="chessEngineV2"/>
 		</Unit>
 		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/main.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/moveOrderer.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/moveOrderer.h">
 			<Option target="chessEngineV2"/>
 		</Unit>
 		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/CMakeLists.txt">

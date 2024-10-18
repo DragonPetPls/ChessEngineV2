@@ -406,8 +406,8 @@ std::vector<coord> Game::locatePieces(bitboard board) {
     return locations;
 }
 
-std::list<move> Game::getAllPseudoLegalMoves() {
-    std::list<move> pseudoLegalMoves;
+std::vector<move> Game::getAllPseudoLegalMoves() {
+    std::vector<move> pseudoLegalMoves;
 
     //Generating hitmaps
     bitboard ownHitmap = 0;
