@@ -41,6 +41,26 @@ struct squaresLookup{
     bitboard allSquares;
 };
 
+
+struct GameKey{
+    bitboard pieceBoards[12];
+    uint8_t castleRights;
+    uint8_t whoToMove;
+    uint8_t enPassant;
+
+    bool operator==(const GameKey& other) const {
+        for (int i = 0; i < 12; ++i) {
+            if (pieceBoards[i] != other.pieceBoards[i]) {
+                return false;
+            }
+        }
+        return castleRights == other.castleRights &&
+               enPassant == other.enPassant &&
+               whoToMove == other.whoToMove;
+    }
+};
+
+
 class Game {
 private:
     uint64_t hashBoards[NUMBER_OF_HASH_KEYS];
@@ -99,10 +119,28 @@ public:
     color getWhoToMove() const;
     color getWhoNotToMove() const;
     int getCounterToDraw() const;
+    GameKey toKey() const;
 
     //Necessary for the hashtable
     bool operator==(const Game& other) const;
 };
+
+
+namespace std {
+    template <>
+    struct hash<GameKey> {
+        std::size_t operator()(const GameKey& k) const {
+            uint64_t hash = 0;
+            for (int i = 0; i < 12; i++) {
+                hash ^= std::hash<bitboard>{}(k.pieceBoards[i]) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            }
+            hash ^= std::hash<uint8_t>{}(k.whoToMove) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            hash ^= std::hash<uint8_t>{}(k.castleRights) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            hash ^= std::hash<uint8_t>{}(k.enPassant) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            return hash;
+        }
+    };
+}
 
 
 namespace std {

@@ -6,7 +6,7 @@
 #include "Communication.h"
 #include "magicBitboards.h"
 
-#define GAME_DEBUG
+//#define GAME_DEBUG
 //#define MAGIC_DEBUG
 
 #ifdef GAME_DEBUG

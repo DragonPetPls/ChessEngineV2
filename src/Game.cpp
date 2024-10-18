@@ -1123,3 +1123,15 @@ bitboard &Game::getKingReachableSquares(coord location) {
 std::vector<bitboard> &Game::getKingFinalSquares(coord location) {
     return kingLookup[location.x + 8 * location.y].finalSquares;
 }
+
+
+GameKey Game::toKey() const {
+    GameKey key;
+    for (int i = 0; i < 12; ++i) {
+        key.pieceBoards[i] = this->pieceBoards[i];
+    }
+    key.castleRights = this->castleRights;
+    key.enPassant = this->enPassant;
+    key.whoToMove = this->whoToMove;
+    return key;
+}
