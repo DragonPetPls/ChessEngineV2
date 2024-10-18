@@ -117,6 +117,7 @@ void Game::printGame() {
  * loads the default chess starting position
  */
 void Game::loadStartingPosition() {
+    moveCount = 0;
     pieceBoards[WHITE_PAWN] = WHITE_PAWN_STARTING_POS;
     pieceBoards[WHITE_BISHOP] = WHITE_BISHOP_STARTING_POS;
     pieceBoards[WHITE_KNIGHT] = WHITE_KNIGHT_STARTING_POS;
@@ -151,6 +152,7 @@ void Game::loadStartingPosition() {
  * This function executes the given move, it is assumed the move is legal
  */
 void Game::doMove(move m) {
+    moveCount++;
     //Storing the current hash
     pastHashes.push_back(std::hash<Game>()(*this));
 
@@ -322,6 +324,7 @@ int Game::getYCoord(bitboard board) {
 }
 
 void Game::undoMove() {
+    moveCount--;
     //Getting the last move
     pastMove &past = pastMoves.top();
 
@@ -789,7 +792,7 @@ status Game::getStatus() {
     for (uint64_t pastHash: pastHashes) {
         counter += hash == pastHash;
     }
-    if (counter >= 3) {
+    if (counter >= 2) {
         return DRAW;
     }
 
@@ -867,13 +870,14 @@ int Game::getCounterToDraw() const {
  * Loads a chess position using a fen as an input
  */
 void Game::loadFen(std::string &fen) {
+    moveCount = 0;
 
     //deleting all old stuff
     while (!pastMoves.empty()) {
         pastMoves.pop();
     }
     while (!pastHashes.empty()) {
-        pastMoves.pop();
+        pastHashes.pop_back();
     }
 
     for (int i = 0; i < 12; i++) {

@@ -92,6 +92,7 @@ private:
     int counterToDraw = 0;
 
 public:
+    int moveCount = 0;
     magicBitboards magic;
     squaresLookup knightLookup[64];
 

@@ -8,7 +8,7 @@
 
 //#define GAME_DEBUG
 //#define MAGIC_DEBUG
-#define ENGINE_DEBUG
+//#define ENGINE_DEBUG
 
 #ifdef GAME_DEBUG
 int nodesSearched = 0;
@@ -20,7 +20,7 @@ int main() {
 #ifndef GAME_DEBUG
 #ifndef MAGIC_DEBUG
 #ifndef ENGINE_DEBUG
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "Yay!" << std::endl;
     Communication c;
     c.startCommunication();
 #endif
