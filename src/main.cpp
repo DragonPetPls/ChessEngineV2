@@ -74,6 +74,11 @@ int main() {
 
     Game g;
     Engine e;
+    g.loadStartingPosition();
+    std::string f = "3r3k/1pr2ppp/1p1Pp3/4P3/8/6P1/5PP1/1R4K1 b - - 1 32";
+    g.loadFen(f);
+    std::cout << e.evalPosition(g) << std::endl;
+
     std::string fen[6] = {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
                           "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ",
                           "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -",

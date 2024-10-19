@@ -12,6 +12,8 @@
 
 class Engine {
 private:
+    bitboard whitePassedPawns[64];
+    bitboard blackPassedPawns[64];
     std::atomic<bool> keepRunning;
     int negamax(Game &g, int depth, int alpha, int beta);
     std::unordered_map<GameKey, node> hashTable;
@@ -20,8 +22,8 @@ private:
 
     int bestContinuation;
 
-
 public:
+    Engine();
     int evalCounter = 0;
     int search(Game g, int toDepth = MAX);
 
@@ -30,7 +32,7 @@ public:
 
     int evalPosition(Game &g);
 
-    int getSquareValue(piece p, coord c);
+    int getSquareValue(piece p, coord c, int endgame);
 };
 
 

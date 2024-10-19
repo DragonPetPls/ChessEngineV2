@@ -1025,6 +1025,7 @@ void Game::loadFen(std::string &fen) {
         }
         counter++;
     }
+    printGame();
 }
 
 void Game::printMove(move m) {

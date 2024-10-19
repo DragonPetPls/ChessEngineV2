@@ -70,48 +70,98 @@ int Engine::evalPosition(Game &g) {
         pieceLocations[i] = g.locatePieces(g.getPieceBoards()[i]);
     }
 
+    //Checking how endgame it is:
+    int value = 0;
+    value += pieceLocations[ROOK + WHITE].size() * 5;
+    value += pieceLocations[ROOK + BLACK].size() * 5;
+    value += pieceLocations[QUEEN + WHITE].size() * 9;
+    value += pieceLocations[QUEEN + BLACK].size() * 9;
+    value += pieceLocations[KNIGHT + WHITE].size() * 3;
+    value += pieceLocations[KNIGHT + BLACK].size() * 3;
+    value += pieceLocations[BISHOP + WHITE].size() * 3;
+    value += pieceLocations[BISHOP + BLACK].size() * 3;
+
+    int endgame = 10 * (value <= 7) + (-0.5 * value + 13) * (value > 7 && value < 26);
+
     int eval = 0;
     for (int i = 0; i < 6; i++) {
-        eval += pieceLocations[i + g.getWhoToMove()].size() * value[i];
-        eval -= pieceLocations[i + g.getWhoNotToMove()].size() * value[i];
+        eval += (pieceLocations[i + g.getWhoToMove()].size() * (eg_value[i] * endgame + mg_value[i] * (10 - endgame)))/10;
+        eval -= (pieceLocations[i + g.getWhoNotToMove()].size() * (eg_value[i] * endgame + mg_value[i] * (10 - endgame)))/10;
     }
 
     for (int i = 0; i < 6; i++) {
         for (coord c: pieceLocations[i + g.getWhoToMove()]) {
-            eval += getSquareValue(i, c);
+            eval += getSquareValue(i + g.getWhoToMove(), c, endgame);
         }
         for (coord c: pieceLocations[i + g.getWhoNotToMove()]) {
-            eval -= getSquareValue(i, c);
+            eval -= getSquareValue(i + g.getWhoNotToMove(), c, endgame);
         }
+    }
+
+    //Checking for passed pawns
+    int whiteEval = 0;
+    for(coord c: pieceLocations[WHITE + PAWN]){
+        whiteEval += 400 * ((whitePassedPawns[c.x + 8 * c.y] & g.getPieceBoards()[PAWN + BLACK]) == 0);
+    }
+    int blackEval = 0;
+    for(coord c: pieceLocations[BLACK + PAWN]){
+        blackEval += 400 * ((blackPassedPawns[c.x + 8 * c.y] & g.getPieceBoards()[PAWN + WHITE]) == 0);
+    }
+    if(g.getWhoToMove() == WHITE){
+        eval += (whiteEval - blackEval)/(14 - endgame);
+    } else {
+        eval += (blackEval - whiteEval)/(14 - endgame);
     }
 
     return eval;
 }
 
-int Engine::getSquareValue(piece p, coord c) {
+/*
+ * Returns the value a piece gets due to being on a square. the int endgame is how much endgame tables shuld be weighted,
+ * with 10 being only endgame and 0 only midgame
+ */
+int Engine::getSquareValue(piece p, coord c, int endgame) {
 
     int y = c.y * (p < 6) + (7 - c.y) * (p >= 6);
     int index = (7 - y) * 8 + c.x;
     p = p - 6 * (p > 5);
+
+    int endgameValue;
+    int midgameValue;
     switch (p) {
-        case PAWN:
-            return pawnSquareTable[index];
-        case KNIGHT:
-            return knightSquareTable[index];
-        case BISHOP:
-            return bishopSquareTable[index];
-        case ROOK:
-            return rookSquareTable[index];
         case QUEEN:
-            return queenSquareTable[index];
+            endgameValue = eg_queen_table[index];
+            midgameValue = mg_queen_table[index];
+            break;
+        case ROOK:
+            endgameValue = eg_rook_table[index];
+            midgameValue = mg_rook_table[index];
+            break;
+        case BISHOP:
+            endgameValue = eg_bishop_table[index];
+            midgameValue = mg_bishop_table[index];
+            break;
+        case KNIGHT:
+            endgameValue = eg_knight_table[index];
+            midgameValue = mg_knight_table[index];
+            break;
+        case PAWN:
+            endgameValue = eg_pawn_table[index];
+            midgameValue = mg_pawn_table[index];
+            break;
         case KING:
-            return kingSquareTable[index];
+            endgameValue = eg_king_table[index];
+            midgameValue = mg_king_table[index];
+            break;
         default:
-            return 0;
+            // Handle the case where the piece 'p' is invalid or unrecognized
+            endgameValue = 0;
+            midgameValue = 0;
+            break;
     }
 
-
-    return 0;
+    //Weighting differently depending on the endgame factor
+    return (endgameValue * endgame + midgameValue * (10 - endgame))/10;
 }
 
 int Engine::search(Game g, int toDepth) {
@@ -252,5 +302,34 @@ int Engine::quiesce(Game &g, int alpha, int beta, int depth) {
     }
 
     return alpha;
+}
+
+Engine::Engine() {
+    //Initialising passed pawn bitboards
+    for(int x = 0; x < 8; x++){
+        for(int y = 0; y < 8; y++){
+
+            bitboard colloms = 0;
+            if(x == 0){
+                colloms |= COLLOMS[0] | COLLOMS[1];
+            } else if (x == 7){
+                colloms |= COLLOMS[6] | COLLOMS[7];
+            } else {
+                colloms |= COLLOMS[x - 1] | COLLOMS[x] | COLLOMS[x + 1];
+            }
+
+            whitePassedPawns[x +  8 * y] = colloms;
+            blackPassedPawns[x + 8 * y] = colloms;
+
+            for(int i = 0; i < 8; i++){
+                if(i <= y){
+                    whitePassedPawns[x + 8 * y] &= ~ROWS[i];
+                }
+                if(i >= y){
+                    blackPassedPawns[x + 8 * y] &= ~ROWS[i];
+                }
+            }
+        }
+    }
 }
 

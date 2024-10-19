@@ -198,6 +198,8 @@ void Communication::worker() {
             }
             std::cout << time << std::endl;
             std::thread(&Communication::go, this, time).detach();
+        } else if (subcommand == "eval"){
+            std::cout << "Eval: " << e.evalPosition(g) << std::endl;
         }
 
     }
