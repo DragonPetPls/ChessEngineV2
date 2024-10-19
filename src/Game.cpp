@@ -117,6 +117,7 @@ void Game::printGame() {
  * loads the default chess starting position
  */
 void Game::loadStartingPosition() {
+    currentStatus = ON_GOING;
     moveCount = 0;
     pieceBoards[WHITE_PAWN] = WHITE_PAWN_STARTING_POS;
     pieceBoards[WHITE_BISHOP] = WHITE_BISHOP_STARTING_POS;
@@ -152,6 +153,7 @@ void Game::loadStartingPosition() {
  * This function executes the given move, it is assumed the move is legal
  */
 void Game::doMove(move m) {
+    currentStatus = TBD;
     moveCount++;
     //Storing the current hash
     pastHashes.push_back(std::hash<Game>()(*this));
@@ -324,6 +326,7 @@ int Game::getYCoord(bitboard board) {
 }
 
 void Game::undoMove() {
+    currentStatus = TBD;
     moveCount--;
     //Getting the last move
     pastMove &past = pastMoves.top();
@@ -393,6 +396,7 @@ void Game::undoMove() {
 std::vector<coord> Game::locatePieces(bitboard board) {
     std::vector<coord> locations;
     locations.reserve(8);
+
     for (int x = 0; x < 8; x++) {
         if(COLLOMS[x] & board){
             for (int y = 0; y < 8; y++) {
@@ -411,6 +415,7 @@ std::vector<coord> Game::locatePieces(bitboard board) {
 
 std::vector<move> Game::getAllPseudoLegalMoves() {
     std::vector<move> pseudoLegalMoves;
+    pseudoLegalMoves.reserve(80);
 
     //Generating hitmaps
     bitboard ownHitmap = 0;
@@ -781,8 +786,13 @@ bool Game::isKingSafe(color whichKing) {
 
 status Game::getStatus() {
 
+    if(currentStatus != TBD){
+        return currentStatus;
+    }
+
     //Checking 50 move rule
     if (counterToDraw >= 100) {
+        currentStatus = DRAW;
         return DRAW;
     }
 
@@ -793,25 +803,23 @@ status Game::getStatus() {
         counter += hash == pastHash;
     }
     if (counter >= 2) {
+        currentStatus = DRAW;
         return DRAW;
     }
 
     //Checking for stalemate
-    auto next = getAllPseudoLegalMoves();
-    for (auto m: next) {
-        this->doMove(m);
-        if (isPositionLegal()) {
-            this->undoMove();
-            return ON_GOING;
-        }
-        this->undoMove();
+    if(isMovePlayable()){
+        currentStatus = ON_GOING;
+        return ON_GOING;
     }
 
     //Checking for stalemate or checkmate
     bool isCheck = !isKingSafe(whoToMove);
     if (isCheck) {
+        currentStatus = CHECKMATE;
         return CHECKMATE;
     } else {
+        currentStatus = DRAW;
         return DRAW;
     }
     return 0;
@@ -870,6 +878,7 @@ int Game::getCounterToDraw() const {
  * Loads a chess position using a fen as an input
  */
 void Game::loadFen(std::string &fen) {
+    currentStatus = TBD;
     moveCount = 0;
 
     //deleting all old stuff
@@ -1139,4 +1148,217 @@ GameKey Game::toKey() const {
     key.enPassant = this->enPassant;
     key.whoToMove = this->whoToMove;
     return key;
+}
+
+bool Game::isMovePlayable() {
+
+    //Generating hitmaps
+    bitboard ownHitmap = 0;
+    bitboard enemyHitmap = 0;
+    bitboard hitmap = 0;
+    for (int i = 0; i < 6; i++) {
+        ownHitmap |= pieceBoards[i + whoToMove];
+        enemyHitmap |= pieceBoards[i + whoNotToMove];
+    }
+    hitmap = ownHitmap | enemyHitmap;
+
+    //Knight moves
+    auto knightLocations = locatePieces(pieceBoards[whoToMove + KNIGHT]);
+    for (coord c: knightLocations) {
+        std::vector<bitboard> finalSquares = getKnightFinalSquares(c);
+        bitboard startingSquare = generateBitboard(c.x, c.y);
+        //Checking for collision on each final square
+        for (bitboard finalSquare: finalSquares) {
+            if (!(finalSquare & ownHitmap)) {
+                move m;
+                m.startingSquare = startingSquare;
+                m.finalSquare = finalSquare;
+                m.movingPiece = KNIGHT;
+                m.promotion = NONE;
+                //Testing the move
+                doMove(m);
+                if(isPositionLegal()){
+                    undoMove();
+                    return true;
+                }
+                undoMove();
+            }
+        }
+    }
+
+    //Straight sliding pieces
+    bitboard slidingPieces = pieceBoards[ROOK + whoToMove] | pieceBoards[QUEEN + whoToMove];
+    auto slidingPieceLocations = locatePieces(slidingPieces);
+    for (coord c: slidingPieceLocations) {
+        std::vector<bitboard> finalSquares = magic.getStraightFinalSquares(c.x, c.y, hitmap);
+        bitboard startingSquare = generateBitboard(c.x, c.y);
+
+        //Checking for collision on each final square
+        for (bitboard finalSquare: finalSquares) {
+            if (!(finalSquare & ownHitmap)) {
+                move m;
+                m.startingSquare = startingSquare;
+                m.finalSquare = finalSquare;
+                if (startingSquare & pieceBoards[ROOK + whoToMove]) {
+                    m.movingPiece = ROOK;
+                } else {
+                    m.movingPiece = QUEEN;
+                }
+                m.promotion = NONE;
+                doMove(m);
+                if(isPositionLegal()){
+                    undoMove();
+                    return true;
+                }
+                undoMove();
+            }
+        }
+    }
+
+    //Diagonal pieces
+    bitboard diagonalPieces = pieceBoards[BISHOP + whoToMove] | pieceBoards[QUEEN + whoToMove];
+    auto diagonalPieceLocations = locatePieces(diagonalPieces);
+    for (coord c: diagonalPieceLocations) {
+        std::vector<bitboard> finalSquares = magic.getDiagonalFinalSquares(c.x, c.y, hitmap);
+        // generateDiagonalPieceFinalSquares(c, hitmap);
+        bitboard startingSquare = generateBitboard(c.x, c.y);
+
+        //Checking for collision on each final square
+        for (bitboard finalSquare: finalSquares) {
+            if (!(finalSquare & ownHitmap)) {
+                move m;
+                m.startingSquare = startingSquare;
+                m.finalSquare = finalSquare;
+                if (startingSquare & pieceBoards[BISHOP + whoToMove]) {
+                    m.movingPiece = BISHOP;
+                } else {
+                    m.movingPiece = QUEEN;
+                }
+                m.promotion = NONE;
+                doMove(m);
+                if(isPositionLegal()){
+                    undoMove();
+                    return true;
+                }
+                undoMove();
+            }
+        }
+    }
+
+    //King moves, not testing castle because if castle is possible so is a regular move
+    coord location;
+    location.x = getXCoord(pieceBoards[KING + whoToMove]);
+    location.y = getYCoord(pieceBoards[KING + whoToMove]);
+    auto finalSquares = generateKingFinalSquares(location);
+    for(bitboard finalSquare: finalSquares){
+        //Checking for collision
+        if (!(finalSquare & ownHitmap)) {
+            move m;
+            m.startingSquare = pieceBoards[whoToMove + KING];
+            m.finalSquare = finalSquare;
+            m.movingPiece = KING;
+            m.promotion = NONE;
+            doMove(m);
+            if(isPositionLegal()){
+                undoMove();
+                return true;
+            }
+            undoMove();
+        }
+    }
+
+    //Generating pawn moves
+    auto pawnLocations = locatePieces(pieceBoards[whoToMove + PAWN]);
+    int vy = 1 - 2 * (whoToMove == BLACK);
+    for (coord &c: pawnLocations) {
+        bitboard startingSquare = generateBitboard(c.x, c.y);
+
+        //Generating all finalSquares
+        //Regular moves
+        bitboard finalSquare = generateBitboard(c.x, c.y + vy);
+        if (!(finalSquare & hitmap)) {
+            move m;
+            m.startingSquare = startingSquare;
+            m.finalSquare = finalSquare;
+            m.movingPiece = PAWN;
+
+            //Checking for promotion
+            if (c.y + vy == 0 || c.y + vy == 7) {
+                m.promotion = QUEEN;
+                //different promotions are not relevant for this test
+                doMove(m);
+                if(isPositionLegal()){
+                    undoMove();
+                    return true;
+                }
+                undoMove();
+            } else {
+                //Not a promotion
+                m.promotion = NONE;
+                doMove(m);
+                if(isPositionLegal()){
+                    undoMove();
+                    return true;
+                }
+                undoMove();
+            }
+        }
+
+        //Advancing 2 squares
+        if ((c.y == 1 && whoToMove == WHITE) || (c.y == 6 && whoToMove == BLACK)) {
+            finalSquare = generateBitboard(c.x, c.y + 2 * vy);
+            bitboard middleSquare = generateBitboard(c.x, c.y + vy);
+            if (!(finalSquare & hitmap)
+                && !(middleSquare & hitmap)) {
+                move m;
+                m.startingSquare = startingSquare;
+                m.finalSquare = finalSquare;
+                m.promotion = NONE;
+                m.movingPiece = PAWN;
+                doMove(m);
+                if(isPositionLegal()){
+                    undoMove();
+                    return true;
+                }
+                undoMove();
+            }
+        }
+
+        //Captures
+        for (int i = 0; i < 2; i++) {
+            int vx = 1 - 2 * i;
+            if (c.x + vx >= 0 && c.x + vx < 8) {
+                finalSquare = generateBitboard(c.x + vx, c.y + vy);
+                if ((finalSquare & enemyHitmap)
+                    || (((enPassant >> (7 - c.x - vx)) == 1) &&
+                        ((whoToMove == WHITE && c.y == 4) || (whoToMove == BLACK && c.y == 3)))) {
+                    move m;
+                    m.startingSquare = startingSquare;
+                    m.finalSquare = finalSquare;
+                    m.movingPiece = PAWN;
+
+                    //Checking for promotion
+                    if (c.y + vy == 0 || c.y + vy == 7) {
+                        m.promotion = QUEEN;
+                        doMove(m);
+                        if(isPositionLegal()){
+                            undoMove();
+                            return true;
+                        }
+                        undoMove();
+                    } else {
+                        m.promotion = NONE;
+                        doMove(m);
+                        if(isPositionLegal()){
+                            undoMove();
+                            return true;
+                        }
+                        undoMove();
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }

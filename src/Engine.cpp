@@ -271,11 +271,12 @@ void Engine::setNode(Game &g, int score, int depth, int alpha, int beta, bool is
 int Engine::quiesce(Game &g, int alpha, int beta, int depth) {
     int stand_pat = evalPosition(g);
     //We return if the move was worse than the original position
+
     if(stand_pat > beta){
         return beta;
     }
 
-    if(depth == 0){
+    if(depth < -4){
         return stand_pat;
     }
 
@@ -295,10 +296,12 @@ int Engine::quiesce(Game &g, int alpha, int beta, int depth) {
         g.doMove(next[index]);
         int score = -quiesce(g, -beta, -alpha, depth - 1);
         g.undoMove();
-        if( score >= beta )
+        if( score >= beta ){
             return beta;
-        if( score > alpha )
+        }
+        if( score > alpha ) {
             alpha = score;
+        }
     }
 
     return alpha;

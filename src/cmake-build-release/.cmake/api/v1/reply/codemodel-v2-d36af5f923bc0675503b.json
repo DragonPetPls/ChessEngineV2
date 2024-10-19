@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.27"
@@ -19,7 +19,7 @@
 					]
 				}
 			],
-			"name" : "Debug",
+			"name" : "Release",
 			"projects" : 
 			[
 				{
@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "chessEngineV2::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-chessEngineV2-Debug-0a65ee836c92a274c0aa.json",
+					"jsonFile" : "target-chessEngineV2-Release-40dc9d053b14c82f9285.json",
 					"name" : "chessEngineV2",
 					"projectIndex" : 0
 				}
@@ -49,7 +49,7 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-debug",
+		"build" : "/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release",
 		"source" : "/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src"
 	},
 	"version" : 

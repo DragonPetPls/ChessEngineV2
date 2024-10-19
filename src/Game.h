@@ -63,6 +63,8 @@ struct GameKey{
 
 class Game {
 private:
+    uint8_t currentStatus = TBD;
+
     uint64_t hashBoards[NUMBER_OF_HASH_KEYS];
 
     std::list<uint64_t> pastHashes;
@@ -88,6 +90,8 @@ private:
 
     bool isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap);
     bool isSquareUnderAttack(coord square, color attackingColor);
+
+    bool isMovePlayable();
 
     int counterToDraw = 0;
 

@@ -95,6 +95,13 @@ std::vector<int> moveOrderer::rankMoves(Game &g, std::vector<move> &next, int be
 std::vector<int> moveOrderer::filterQuiesceCandidates(Game &g, std::vector<move> &next) {
     //Initialising bitboards
 
+    //Initialising bitboards
+    majorPieces = g.getPieceBoards()[QUEEN + g.getWhoNotToMove()];
+    majorPieces |= g.getPieceBoards()[ROOK + g.getWhoNotToMove()];
+
+    minorPieces = g.getPieceBoards()[KNIGHT + g.getWhoNotToMove()];
+    minorPieces |= g.getPieceBoards()[BISHOP + g.getWhoNotToMove()];
+
     bitboard hitmap = 0;
     for(int i = 0; i < 12; i++){
         hitmap |= g.getPieceBoards()[i];

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="chessEngineV2"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chessEngineV2">
+				<Option output="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/chessEngineV2" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/../../../../include/c++/13.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/../../../../include/c++/13.2.0/x86_64-unknown-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/../../../../include/c++/13.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 chessEngineV2"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chessEngineV2/fast">
+				<Option output="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/chessEngineV2" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/../../../../include/c++/13.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/../../../../include/c++/13.2.0/x86_64-unknown-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/../../../../include/c++/13.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 chessEngineV2/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Communication.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Engine.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Game.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/main.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/moveOrderer.cpp">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/moveOrderer.h">
+			<Option target="chessEngineV2"/>
+		</Unit>
+		<Unit filename="/home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

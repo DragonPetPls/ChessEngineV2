@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = 
 
-CXX_FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+CXX_FLAGS =  -O0 -g -O2 -g -std=gnu++14 -fdiagnostics-color=always
 

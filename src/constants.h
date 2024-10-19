@@ -43,6 +43,8 @@
 #define CHECKMATE 1
 #define DRAW 2
 
+#define TBD 3
+
 #define NUMBER_OF_HASH_KEYS 1000
 
 typedef uint64_t bitboard;
