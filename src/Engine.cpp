@@ -208,7 +208,6 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta) {
             && n->beta >= beta) {
             return n->score;
         } else if (n->isOver) {
-            g.printGame();
             return n->score;
         }
         nBestCon = n->bestCon;
@@ -269,6 +268,10 @@ void Engine::setNode(Game &g, int score, int depth, int alpha, int beta, bool is
 }
 
 int Engine::quiesce(Game &g, int alpha, int beta, int depth) {
+    if(!keepRunning){
+        return 0;
+    }
+
     int stand_pat = evalPosition(g);
     //We return if the move was worse than the original position
 
@@ -294,6 +297,10 @@ int Engine::quiesce(Game &g, int alpha, int beta, int depth) {
     auto selection = mo.filterQuiesceCandidates(g, next);
     for(int index: selection){
         g.doMove(next[index]);
+        if(!g.isPositionLegal()){
+            g.undoMove();
+            continue;
+        }
         int score = -quiesce(g, -beta, -alpha, depth - 1);
         g.undoMove();
         if( score >= beta ){

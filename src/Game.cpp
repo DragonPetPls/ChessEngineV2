@@ -796,6 +796,29 @@ status Game::getStatus() {
         return DRAW;
     }
 
+
+    //Check for insufficient material
+    bool majorPieces;
+    majorPieces = pieceBoards[ROOK + WHITE] | pieceBoards[ROOK + BLACK];
+    majorPieces = majorPieces | pieceBoards[QUEEN + WHITE] | pieceBoards[QUEEN + BLACK];
+    bool pawns = pieceBoards[PAWN + WHITE] | pieceBoards[PAWN + BLACK];
+
+    if(!(majorPieces || pawns)){
+        int whiteMinorPieces = locatePieces(pieceBoards[KNIGHT + WHITE] | pieceBoards[BISHOP + WHITE]).size();
+        int blackMinorPieces = locatePieces(pieceBoards[KNIGHT + BLACK] | pieceBoards[BISHOP + BLACK]).size();
+      //  printGame();
+        if(whiteMinorPieces < 2 && blackMinorPieces < 2){
+            return DRAW;
+        } else if (blackMinorPieces == 0 && whiteMinorPieces == 2
+        && locatePieces(pieceBoards[KNIGHT + WHITE]).size() == 2){
+            return DRAW; //only two knights from white
+        } else if (whiteMinorPieces == 0 && blackMinorPieces == 2
+                   && locatePieces(pieceBoards[KNIGHT + BLACK]).size() == 2){
+            return DRAW; //only two knights from black
+        }
+    }
+
+/* */
     //Checking 3-fold repetion
     uint64_t hash = std::hash<Game>()(*this);
     int counter = 0;
