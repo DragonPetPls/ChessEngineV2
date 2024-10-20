@@ -169,6 +169,9 @@ int Engine::search(Game g, int toDepth) {
         keepRunning = true;
     }
 
+    hashTable.clear();
+    hashTable.reserve(40000000);
+
     int depth = 1;
     int score;
 

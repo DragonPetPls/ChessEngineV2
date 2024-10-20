@@ -20,7 +20,7 @@ int main() {
 #ifndef GAME_DEBUG
 #ifndef MAGIC_DEBUG
 #ifndef ENGINE_DEBUG
-    std::cout << "Yay!" << std::endl;
+    std::cout << "Yayy!" << std::endl;
     Communication c;
     c.startCommunication();
 #endif
