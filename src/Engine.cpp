@@ -262,7 +262,7 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta) {
     int bestCon = UNKNOWN;
     moveOrderer o;
     auto order = o.rankMoves(g, next, nBestCon);
-
+    bool failedHigh = false;
     int highestScore = LOSS;
     for (int i = 0; i < next.size(); i++) {
         g.doMove(next[order[i]]);
@@ -274,18 +274,29 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta) {
 
         int score;
        // score = -negamax(g, depth - 1, -beta, -alpha);
+        int depthReduction;
+        if((depth > 3 && i > 3) && !failedHigh){
+            depthReduction = 3;
+        } else {
+            depthReduction = 1;
+        }
+
 
         if(i == 0){
             //Principle variation
-            score = -negamax(g, depth - 1, -beta, -alpha);
+            score = -negamax(g, depth - depthReduction, -beta, -alpha);
         } else {
             //Search with null window
-            score = -negamax(g, depth - 1, -alpha - 1, -alpha);
+            score = -negamax(g, depth - depthReduction, -alpha - 1, -alpha);
 
             if(score > alpha && score < beta){
                 //Search with full window
-                score = -negamax(g, depth - 1, -beta, -alpha);
+                score = -negamax(g, depth - depthReduction, -beta, -alpha);
             }
+        }
+
+        if(i < 4 && score == -alpha){
+            failedHigh = true;
         }
 
 /* */
@@ -299,6 +310,7 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta) {
             alpha = score;
         }
         if (score >= beta) {
+            highestScore = beta;
             g.undoMove();
             break;
         }
