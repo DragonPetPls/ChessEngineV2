@@ -27,6 +27,7 @@ struct node{
     int bestCon;
 };
 
+const int pawnProtectionBonus = 5;
 
 const int mg_value[6] = { 82, 337, 365, 477, 1025,  0};
 const int eg_value[6] = { 94, 281, 297, 512,  936,  0};

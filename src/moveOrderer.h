@@ -17,8 +17,11 @@ struct moveRank{
 class moveOrderer {
 
 private:
-    bitboard majorPieces;
-    bitboard minorPieces;
+    bitboard rookBitboard;
+    bitboard queenBitboard;
+    bitboard knightBitboard;
+    bitboard bishopBitboard;
+    bitboard pawnBitboard;
     bitboard diagonalChecks;
     bitboard straightChecks;
     bitboard knightChecks;

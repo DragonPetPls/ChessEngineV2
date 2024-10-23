@@ -112,7 +112,35 @@ int Engine::evalPosition(Game &g) {
     } else {
         eval += (blackEval - whiteEval)/(14 - endgame);
     }
+/*
+    //King pawn distance:
+    int xKing = Game::getXCoord(g.getPieceBoards()[KING + g.getWhoToMove()]);
+    int yKing = Game::getYCoord(g.getPieceBoards()[KING + g.getWhoToMove()]);
+    auto pawnLocation = Game::locatePieces(g.getPieceBoards()[PAWN + g.getWhoToMove()]);
+    int distance = 0;
+    for(coord c: pawnLocation){
+        distance += std::min(abs(xKing - c.x), abs(yKing - c.y));
 
+        //Bonus for pawns protecting other pawns
+       eval += pawnProtectionBonus * ((g.getPieceBoards()[g.getWhoToMove() + PAWN] & Game::generateBitboard(c.x + 1, c.y + 1)) != 0);
+       eval += pawnProtectionBonus * ((g.getPieceBoards()[g.getWhoToMove() + PAWN] & Game::generateBitboard(c.x - 1, c.y + 1)) != 0);
+    }
+    eval -= distance * endgame;
+
+    //King pawn distance:
+    xKing = Game::getXCoord(g.getPieceBoards()[KING + g.getWhoNotToMove()]);
+    yKing = Game::getYCoord(g.getPieceBoards()[KING + g.getWhoNotToMove()]);
+    pawnLocation = Game::locatePieces(g.getPieceBoards()[PAWN + g.getWhoNotToMove()]);
+    distance = 0;
+    for(coord c: pawnLocation){
+        distance += std::min(abs(xKing - c.x), abs(yKing - c.y));
+
+        //Bonus for pawns protecting other pawns
+       eval -= pawnProtectionBonus * ((g.getPieceBoards()[g.getWhoNotToMove() + PAWN] & Game::generateBitboard(c.x + 1, c.y + 1)) != 0);
+       eval -= pawnProtectionBonus * ((g.getPieceBoards()[g.getWhoNotToMove() + PAWN] & Game::generateBitboard(c.x - 1, c.y + 1)) != 0);
+    }
+    eval += distance * endgame;
+    */
     return eval;
 }
 
@@ -175,11 +203,18 @@ int Engine::search(Game g, int toDepth) {
     int depth = 1;
     int score;
 
+    if(g.getStatus() != ON_GOING){
+        return evalPosition(g);
+    }
+
     while (keepRunning && (depth <= toDepth)) {
         score = negamax(g, depth, MINUS_INF, PLUS_INF);
         if (keepRunning) {
             bestContinuation = hashTable[g.toKey()].bestCon;
             std::cout << "info depth " << depth << " score cp " << score << std::endl;
+        }
+        if(score > WIN - 10000 || depth > 100){
+            break;
         }
         depth++;
     }
@@ -216,7 +251,7 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta) {
         nBestCon = n->bestCon;
     }
 
-    if (depth == 0) {
+    if (depth <= 0) {
         //Exit due to depth
         setNode(g, quiesce(g, alpha, beta), 0, alpha, beta, false);
         return hashTable[g.toKey()].score;
@@ -236,7 +271,25 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta) {
             continue;
         }
 
-        int score = -negamax(g, depth - 1, -beta, -alpha);
+
+        int score;
+       // score = -negamax(g, depth - 1, -beta, -alpha);
+
+        if(i == 0){
+            //Principle variation
+            score = -negamax(g, depth - 1, -beta, -alpha);
+        } else {
+            //Search with null window
+            score = -negamax(g, depth - 1, -alpha - 1, -alpha);
+
+            if(score > alpha && score < beta){
+                //Search with full window
+                score = -negamax(g, depth - 1, -beta, -alpha);
+            }
+        }
+
+/* */
+
         //highestScore = std::max(score, highestScore);
         if (highestScore < score) {
             highestScore = score;

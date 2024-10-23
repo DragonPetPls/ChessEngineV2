@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <random>
 #include "Game.h"
 
 void Game::printGame() {
@@ -1102,6 +1103,7 @@ std::vector<bitboard> Game::generateKnightFinalSquares(coord knightLocation) {
 Game::Game() {
     initSquaresLookup();
 }
+
 
 
  /*

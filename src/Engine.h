@@ -21,7 +21,6 @@ private:
     int quiesce(Game &g, int alpha, int beta, int depth = 0);
 
     int bestContinuation;
-
 public:
     Engine();
     int evalCounter = 0;

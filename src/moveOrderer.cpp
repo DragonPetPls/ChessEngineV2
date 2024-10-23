@@ -11,26 +11,30 @@ int moveOrderer::getNudge(move &m) {
     int nudge = 0;
 
     //Small bonus for taking minor pieces, bigger bonus for major pieces
-    nudge += 30 * ((m.finalSquare & minorPieces) != 0);
-    nudge += 60 * ((m.finalSquare & majorPieces) != 0);
+    nudge += 10 * ((m.finalSquare & pawnBitboard) != 0);
+    nudge += 25 * ((m.finalSquare & knightBitboard) != 0);
+    nudge += 35 * ((m.finalSquare & bishopBitboard) != 0);
+    nudge += 50 * ((m.finalSquare & rookBitboard) != 0);
+    nudge += 90 * ((m.finalSquare & queenBitboard) != 0);
 
     //Checks:
     switch (m.movingPiece) {
         case QUEEN:
-            nudge += 15 * ((m.finalSquare & straightChecks) != 0);
-            nudge += 15 * ((m.finalSquare & diagonalChecks) != 0);
+            nudge += 20 * ((m.finalSquare & straightChecks) != 0);
+            nudge += 20 * ((m.finalSquare & diagonalChecks) != 0);
             break;
         case ROOK:
-            nudge += 15 * ((m.finalSquare & straightChecks) != 0);
+            nudge += 20 * ((m.finalSquare & straightChecks) != 0);
+            nudge += 2;
             break;
         case BISHOP:
-            nudge += 15 * ((m.finalSquare & diagonalChecks) != 0);
+            nudge += 20 * ((m.finalSquare & diagonalChecks) != 0);
             break;
         case KNIGHT:
-            nudge += 15 * ((m.finalSquare & knightChecks) != 0);
+            nudge += 20 * ((m.finalSquare & knightChecks) != 0);
+            nudge += 3;
             break;
     }
-
 
     //Moving into the centre
     nudge += 5 * ((66229406269440 & m.finalSquare) != 0);
@@ -45,11 +49,12 @@ int moveOrderer::getNudge(move &m) {
 std::vector<int> moveOrderer::rankMoves(Game &g, std::vector<move> &next, int bestCon) {
 
     //Initialising bitboards
-    majorPieces = g.getPieceBoards()[QUEEN + g.getWhoNotToMove()];
-    majorPieces |= g.getPieceBoards()[ROOK + g.getWhoNotToMove()];
+    queenBitboard = g.getPieceBoards()[QUEEN + g.getWhoNotToMove()];
+    rookBitboard = g.getPieceBoards()[ROOK + g.getWhoNotToMove()];
 
-    minorPieces = g.getPieceBoards()[KNIGHT + g.getWhoNotToMove()];
-    minorPieces |= g.getPieceBoards()[BISHOP + g.getWhoNotToMove()];
+    knightBitboard = g.getPieceBoards()[KNIGHT + g.getWhoNotToMove()];
+    bishopBitboard = g.getPieceBoards()[BISHOP + g.getWhoNotToMove()];
+    pawnBitboard = g.getPieceBoards()[PAWN + g.getWhoNotToMove()];
 
     bitboard hitmap = 0;
     for(int i = 0; i < 12; i++){
@@ -94,13 +99,12 @@ std::vector<int> moveOrderer::rankMoves(Game &g, std::vector<move> &next, int be
  */
 std::vector<int> moveOrderer::filterQuiesceCandidates(Game &g, std::vector<move> &next) {
     //Initialising bitboards
+    queenBitboard = g.getPieceBoards()[QUEEN + g.getWhoNotToMove()];
+    rookBitboard = g.getPieceBoards()[ROOK + g.getWhoNotToMove()];
 
-    //Initialising bitboards
-    majorPieces = g.getPieceBoards()[QUEEN + g.getWhoNotToMove()];
-    majorPieces |= g.getPieceBoards()[ROOK + g.getWhoNotToMove()];
-
-    minorPieces = g.getPieceBoards()[KNIGHT + g.getWhoNotToMove()];
-    minorPieces |= g.getPieceBoards()[BISHOP + g.getWhoNotToMove()];
+    knightBitboard = g.getPieceBoards()[KNIGHT + g.getWhoNotToMove()];
+    bishopBitboard = g.getPieceBoards()[BISHOP + g.getWhoNotToMove()];
+    pawnBitboard = g.getPieceBoards()[PAWN + g.getWhoNotToMove()];
 
     bitboard hitmap = 0;
     for(int i = 0; i < 12; i++){
