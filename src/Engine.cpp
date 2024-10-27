@@ -208,7 +208,7 @@ int Engine::search(Game g, int toDepth) {
     }
 
     while (keepRunning && (depth <= toDepth)) {
-        score = negamax(g, depth, MINUS_INF, PLUS_INF);
+        score = negamax(g, depth, MINUS_INF, PLUS_INF, depth);
         if (keepRunning) {
             bestContinuation = hashTable[g.toKey()].bestCon;
             std::cout << "info depth " << depth << " score cp " << score << std::endl;
@@ -221,7 +221,7 @@ int Engine::search(Game g, int toDepth) {
     return score;
 }
 
-int Engine::negamax(Game &g, int depth, int alpha, int beta) {
+int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
     int nBestCon = UNKNOWN;
 
     if(!keepRunning){
@@ -271,11 +271,10 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta) {
             continue;
         }
 
-
+        //Late move reduction
         int score;
-       // score = -negamax(g, depth - 1, -beta, -alpha);
         int depthReduction;
-        if((depth > 3 && i > 3) && !failedHigh){
+        if((depth < toDepth * 0.8 && i > 3) && !failedHigh){
             depthReduction = 3;
         } else {
             depthReduction = 1;
@@ -284,14 +283,14 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta) {
 
         if(i == 0){
             //Principle variation
-            score = -negamax(g, depth - depthReduction, -beta, -alpha);
+            score = -negamax(g, depth - depthReduction, -beta, -alpha, toDepth);
         } else {
             //Search with null window
-            score = -negamax(g, depth - depthReduction, -alpha - 1, -alpha);
+            score = -negamax(g, depth - depthReduction, -alpha - 1, -alpha, toDepth);
 
             if(score > alpha && score < beta){
                 //Search with full window
-                score = -negamax(g, depth - depthReduction, -beta, -alpha);
+                score = -negamax(g, depth - depthReduction, -beta, -alpha, toDepth);
             }
         }
 
