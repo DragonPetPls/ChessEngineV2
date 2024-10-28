@@ -274,8 +274,8 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
         //Late move reduction
         int score;
         int depthReduction;
-        if((depth < toDepth * 0.8 && i > 3) && !failedHigh){
-            depthReduction = 3;
+        if((depth < toDepth * 0.65 + 1 && i > 3) && !failedHigh){
+            depthReduction = 2;
         } else {
             depthReduction = 1;
         }
