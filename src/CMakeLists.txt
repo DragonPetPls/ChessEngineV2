@@ -3,6 +3,11 @@ project(chessEngineV2)
 
 set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2")
+
+
 add_executable(chessEngineV2 main.cpp
         Game.h
         constants.h
@@ -10,4 +15,7 @@ add_executable(chessEngineV2 main.cpp
         Communication.cpp
         Engine.cpp
         magicBitboards.h
-        magicBitboards.cpp)
+        magicBitboards.cpp
+        engineConstants.h
+        moveOrderer.h
+        moveOrderer.cpp)
