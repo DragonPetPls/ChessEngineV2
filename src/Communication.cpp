@@ -43,11 +43,64 @@ void Communication::isready() {
 
 
 
-void Communication::go(int time) {
+void Communication::go(std::string command) {
+
+
+    int moveTime = 5000;
+    int increment = 0;
+    int timeLeft = 0;
+    int timeMode = MOVETIME;
+
+    bool isTimeSet = false;
+
+    std::istringstream stream(command);
+    std::string argument;
+    std::vector<std::string> arguments;
+
+    while (stream >> argument) {
+        arguments.push_back(argument);
+    }
+
+    //Checking what time is relevant for the engine:
+    std::string timeStr;
+    std::string incStr;
+    if(g.getWhoToMove() == WHITE){
+        timeStr = "wtime";
+        incStr = "winc";
+    } else {
+        timeStr = "btime";
+        incStr = "binc";
+    }
+
+    for(int i = 0; i < arguments.size() - 1; i++){
+        if(arguments[i] == "movetime"){
+            std::stringstream ss(arguments[i + 1]);
+            ss >> moveTime;
+            timeMode = MOVETIME;
+            break;
+        }
+        if(arguments[i] == timeStr){
+            std::stringstream ss(arguments[i + 1]);
+            ss >> timeLeft;
+            timeMode = MATCHTIME;
+        }
+        if(arguments[i] == incStr){
+            std::stringstream ss(arguments[i + 1]);
+            ss >> increment;
+            timeMode = MATCHTIME;
+        }
+    }
+
+    int time;
+    if(timeMode == MATCHTIME){
+        time = timeLeft;
+    } else {
+        time = moveTime;
+    }
 
     gameMtx.lock();
 
-    move m = e.getMove(g, time - 30);
+    move m = e.getMove(g, time, increment);
     gameMtx.unlock();
     output.lock();
 
@@ -179,25 +232,7 @@ void Communication::worker() {
         } else if (subcommand == "position"){
             position(command);
         } else if (subcommand == "go"){
-
-            int time = 5000;
-
-            std::istringstream stream(command);
-            std::string argument;
-            std::vector<std::string> arguments;
-
-            while (stream >> argument) {
-                arguments.push_back(argument);
-            }
-
-            for(int i = 0; i < arguments.size() - 1; i++){
-                if(arguments[i] == "movetime"){
-                    std::stringstream ss(arguments[i + 1]);
-                    ss >> time;
-                }
-            }
-            std::cout << time << std::endl;
-            std::thread(&Communication::go, this, time).detach();
+            std::thread(&Communication::go, this, command).detach();
         } else if (subcommand == "eval"){
             std::cout << "Eval: " << e.evalPosition(g) << std::endl;
         }

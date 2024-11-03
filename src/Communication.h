@@ -5,6 +5,8 @@
 #ifndef CHESSENGINE_COMMUNICATION_H
 #define CHESSENGINE_COMMUNICATION_H
 
+#define MOVETIME 0
+#define MATCHTIME 1
 
 #include <mutex>
 #include "Engine.h"
@@ -31,7 +33,7 @@ private:
 
     void uci();
     void isready();
-    void go(int time);
+    void go(std::string command);
     void stop();
     void position(std::string command);
 public:

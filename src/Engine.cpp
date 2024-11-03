@@ -8,10 +8,11 @@
 #include  <cmath>
 #include <thread>
 
-move Engine::getMove(Game g, int timeInMs) {
+move Engine::getMove(Game g, int timeLeft, int incTime) {
     int index;
     int bestScore = MINUS_INF;
 
+    int timeInMs = std::max(timeLeft/25, incTime + timeLeft/40);
 
     //Starting the thread
     keepRunning = true;
