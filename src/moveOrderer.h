@@ -32,6 +32,7 @@ private:
 public:
     std::vector<int> rankMoves(Game &g, std::vector<move>& next, int bestCon);
     std::vector<int> filterQuiesceCandidates(Game &g, std::vector<move>& next);
+    std::vector<int> filterNullMoves(Game &g, std::vector<move>& next, int bestCon);
 };
 
 

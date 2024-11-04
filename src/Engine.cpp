@@ -9,22 +9,35 @@
 #include <thread>
 
 move Engine::getMove(Game g, int timeLeft, int incTime, int moveTime) {
-    int index;
-    int bestScore = MINUS_INF;
 
     int timeInMs;
     if(moveTime == 0) {
-       timeInMs = std::max(timeLeft / 25, incTime + timeLeft / 40);
+        //match time
+        recommendedSearchTime = std::max(timeLeft/25, incTime + timeLeft/40);
+        timeInMs = std::min(timeLeft, recommendedSearchTime * 3);
     } else {
+        //Move time
         timeInMs = moveTime;
+        recommendedSearchTime = PLUS_INF;
     }
+
+    searchStartTime = std::chrono::high_resolution_clock::now();
+    std::cout << recommendedSearchTime << std::endl;
 
     //Starting the thread
     keepRunning = true;
+    searchCompleted = false;
     std::thread searchThread(&Engine::search, this, g, MAX);
 
     //Waiting the time
-    std::this_thread::sleep_for(std::chrono::milliseconds(timeInMs));
+    std::unique_lock<std::mutex> lock(searchMtx);
+    if (cv.wait_for(lock, std::chrono::milliseconds(timeInMs - timeTolerance), [this] { return searchCompleted.load(); })) {
+        std::cout << "Search was cancelled.\n";
+    } else {
+        std::cout << "Emergency break out of search\n";
+    }
+
+    //std::this_thread::sleep_for(std::chrono::milliseconds(timeInMs));
 
     //Stopping the search
     keepRunning = false;
@@ -223,6 +236,16 @@ int Engine::search(Game g, int toDepth) {
             break;
         }
         depth++;
+
+        //If we assume that a new search iteration would take to long exit early
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        auto timeElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - searchStartTime);
+        if(keepRunning && timeElapsed.count() > recommendedTimeDivisor * recommendedSearchTime && toDepth == MAX){
+            std::cout << "quit " << timeElapsed.count() << std::endl;
+            searchCompleted = true;
+            cv.notify_one();
+            break;
+        }
     }
     return score;
 }
@@ -255,11 +278,14 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
             return n->score;
         }
         nBestCon = n->bestCon;
+        if(n->score < alpha - 100){
+            depth--;
+        }
     }
 
     if (depth <= 0) {
         //Exit due to depth
-        setNode(g, quiesce(g, alpha, beta), 0, alpha, beta, false);
+        setNode(g, quiesce(g, alpha, beta), depth, alpha, beta, false);
         return hashTable[g.toKey()].score;
     }
 

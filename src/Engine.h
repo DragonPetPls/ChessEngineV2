@@ -7,6 +7,9 @@
 
 
 #include <atomic>
+#include <chrono>
+#include <mutex>
+#include <condition_variable>
 #include "Game.h"
 #include "engineConstants.h"
 
@@ -21,6 +24,12 @@ private:
     int quiesce(Game &g, int alpha, int beta, int depth = 0);
 
     int bestContinuation;
+    std::chrono::time_point<std::chrono::system_clock> searchStartTime;
+    int recommendedSearchTime;
+    std::atomic<bool> searchCompleted;
+    std::mutex searchMtx;
+    std::condition_variable cv;
+
 public:
     Engine();
     int evalCounter = 0;

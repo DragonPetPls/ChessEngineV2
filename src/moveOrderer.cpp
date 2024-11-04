@@ -40,6 +40,10 @@ int moveOrderer::getNudge(move &m, Game &g) {
             break;
     }
 
+    if(m.promotion != NONE){
+        nudge += (m.promotion != NONE) * mg_value[m.promotion] - mg_value[PAWN];
+    }
+
     return nudge;
 }
 
@@ -207,4 +211,53 @@ int moveOrderer::getSquareValue(bitboard square, color pieceColor, piece pieceTy
     }
 
     return value;
+}
+
+std::vector<int> moveOrderer::filterNullMoves(Game &g, std::vector<move> &next, int bestCon) {
+
+    //Initialising bitboards
+    queenBitboard = g.getPieceBoards()[QUEEN + g.getWhoNotToMove()];
+    rookBitboard = g.getPieceBoards()[ROOK + g.getWhoNotToMove()];
+
+    knightBitboard = g.getPieceBoards()[KNIGHT + g.getWhoNotToMove()];
+    bishopBitboard = g.getPieceBoards()[BISHOP + g.getWhoNotToMove()];
+    pawnBitboard = g.getPieceBoards()[PAWN + g.getWhoNotToMove()];
+
+    bitboard hitmap = 0;
+    for(int i = 0; i < 12; i++){
+        hitmap |= g.getPieceBoards()[i];
+    }
+
+    coord enemyKing;
+    enemyKing.x = g.getXCoord(g.getPieceBoards()[g.getWhoNotToMove() + KING]);
+    enemyKing.y = g.getYCoord(g.getPieceBoards()[g.getWhoNotToMove() + KING]);
+
+    diagonalChecks = g.magic.getDiagonalAllFinalSquares(enemyKing.x, enemyKing.y, hitmap);
+    straightChecks = g.magic.getStraightAllFinalSquares(enemyKing.x, enemyKing.y, hitmap);
+    knightChecks = g.knightLookup[enemyKing.x + enemyKing.y * 8].allSquares;
+
+    std::vector<moveRank> order;
+    order.reserve(next.size());
+    //Getting all scores
+    for(int i = 0; i < next.size(); i++){
+        moveRank mr;
+        mr.score = getNudge(next[i], g);
+        mr.score += 1000000 * (i == bestCon);
+        if(mr.score > 0){
+            mr.index = i;
+            order.push_back(mr);
+        }
+    }
+
+    // Sort the vector by the score in ascending order
+    std::sort(order.begin(), order.end(), [](const moveRank &a, const moveRank &b) {
+        return a.score > b.score;  // compare scores for sorting
+    });
+
+    std::vector<int> intOrder;
+    intOrder.reserve(order.size());
+    for(moveRank mr: order){
+        intOrder.push_back(mr.index);
+    }
+    return intOrder;
 }
