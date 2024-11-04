@@ -91,16 +91,12 @@ void Communication::go(std::string command) {
         }
     }
 
-    int time;
     if(timeMode == MATCHTIME){
-        time = timeLeft;
-    } else {
-        time = moveTime;
+        moveTime = 0;
     }
 
     gameMtx.lock();
-
-    move m = e.getMove(g, time, increment);
+    move m = e.getMove(g, timeLeft, increment, moveTime);
     gameMtx.unlock();
     output.lock();
 

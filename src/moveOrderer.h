@@ -26,7 +26,8 @@ private:
     bitboard straightChecks;
     bitboard knightChecks;
 
-    int getNudge(move &m);
+    int getNudge(move &m, Game &g);
+    static int getSquareValue(bitboard square, color pieceColor, piece pieceType);
 
 public:
     std::vector<int> rankMoves(Game &g, std::vector<move>& next, int bestCon);

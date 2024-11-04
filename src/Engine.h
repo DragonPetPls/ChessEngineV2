@@ -26,7 +26,7 @@ public:
     int evalCounter = 0;
     int search(Game g, int toDepth = MAX);
 
-    move getMove(Game g, int timeLeft, int incTime);
+    move getMove(Game g, int timeLeft, int incTime, int moveTime);
     void stopSearch();
 
     int evalPosition(Game &g);
