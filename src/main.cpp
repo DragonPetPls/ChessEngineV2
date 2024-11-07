@@ -7,7 +7,7 @@
 #include "magicBitboards.h"
 #include "Evaluator.h"
 
-//#define GAME_DEBUG
+#define GAME_DEBUG
 //#define MAGIC_DEBUG
 //#define ENGINE_DEBUG
 
@@ -38,8 +38,8 @@ int main() {
                           "r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1 ",
                           "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8  ",
                           "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10 "};
-    int depth[6] = {5, 4, 5, 4, 4, 4};
-    int solution[6] = {4865609, 4085603, 674624, 422333, 2103487, 3894594};
+    int depth[6] = {5, 4, 6, 5, 5, 4};
+    int solution[6] = {4865609, 4085603, 11030083, 15833292, 89941194, 3894594};
 
     nodesSearched = 0;
     auto start = std::chrono::high_resolution_clock::now();
@@ -47,14 +47,12 @@ int main() {
     //6 Perft test
     for(int i = 0; i < 6; i++){
         g.loadFen(fen[i]);
-        std::cout << "Eval " << g.getEval() << std::endl;
         int result = perftSearch(g, depth[i], false);
         if(result == solution[i]){
             std::cout << "Test " << i << " successful" << std::endl;
         } else {
             std::cout << "Error in Test " << i << ": Result: " << result << " Correct: " << solution[i] << std::endl;
         }
-        std::cout << "Eval " << g.getEval() << std::endl;
     }
 
     auto end = std::chrono::high_resolution_clock::now();
