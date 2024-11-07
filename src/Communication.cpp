@@ -8,6 +8,7 @@
 #include <thread>
 #include <sstream>
 #include "Communication.h"
+#include "Evaluator.h"
 
 void Communication::startCommunication() {
     g.loadStartingPosition();
@@ -173,6 +174,7 @@ void Communication::position(std::string command) {
         for(int i = moveIndex + 1; i < arguments.size(); i++){
             move m = g.stringToMove(arguments[i]);
            g.doMove(m);
+           std::cout << "eval: " << g.getEval() << "\n";
 #ifdef DEBUG
             output.lock();
             std::cout << m.getFromHorizontal() << m.getFromVertical() << m.getToHorizontal() << m.getToVertical() << m.getPromoteTo() << std::endl;
@@ -230,7 +232,7 @@ void Communication::worker() {
         } else if (subcommand == "go"){
             std::thread(&Communication::go, this, command).detach();
         } else if (subcommand == "eval"){
-            std::cout << "Eval: " << e.evalPosition(g) << std::endl;
+            std::cout << "Eval: " << Evaluator::evalPosition(g, MINUS_INF) << std::endl;
         }
 
     }

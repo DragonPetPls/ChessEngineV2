@@ -18,10 +18,6 @@ private:
     bitboard whitePassedPawns[64];
     bitboard blackPassedPawns[64];
     std::atomic<bool> keepRunning;
-    int negamax(Game &g, int depth, int alpha, int beta, int toDepth);
-    std::unordered_map<GameKey, node> hashTable;
-    void setNode(Game &g, int score, int depth, int alpha = MINUS_INF, int beta = PLUS_INF, bool isOver = false, int bestCon = UNKNOWN);
-    int quiesce(Game &g, int alpha, int beta, int depth = 0);
 
     int bestContinuation;
     std::chrono::time_point<std::chrono::system_clock> searchStartTime;
@@ -30,6 +26,12 @@ private:
     std::mutex searchMtx;
     std::condition_variable cv;
 
+    int negamax(Game &g, int depth, int alpha, int beta, int toDepth);
+    std::unordered_map<GameKey, node> hashTable;
+    void setNode(Game &g, int score, int depth, int alpha = MINUS_INF, int beta = PLUS_INF, bool isOver = false, int bestCon = UNKNOWN);
+    int quiesce(Game &g, int alpha, int beta, int depth = 0);
+
+
 public:
     Engine();
     int evalCounter = 0;
@@ -37,10 +39,6 @@ public:
 
     move getMove(Game g, int timeLeft, int incTime, int moveTime);
     void stopSearch();
-
-    int evalPosition(Game &g);
-
-    int getSquareValue(piece p, coord c, int endgame);
 };
 
 

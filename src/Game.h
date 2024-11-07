@@ -28,6 +28,7 @@ struct pastMove {
     piece capturedPiece = 0;
     uint8_t enPassant = 0;
     int counterToDraw = 0;
+    int prevEvaluation = 0;
 };
 
 //This struct represents a coordinate pair
@@ -76,6 +77,9 @@ private:
     uint8_t enPassant;
     color whoToMove;
     color whoNotToMove;
+
+    //This evaluation is updated whenever a move is made to allow for a fast evaluation which can the be refined if it seems worth the time
+    int eval = 0;
 
     std::stack<pastMove> pastMoves;
 
@@ -147,6 +151,10 @@ public:
     color getWhoNotToMove() const;
 
     int getCounterToDraw() const;
+
+    int getEval() const;
+
+    void setEval(int eval);
 
     GameKey toKey() const;
 

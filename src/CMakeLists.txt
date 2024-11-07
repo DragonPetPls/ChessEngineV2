@@ -17,5 +17,5 @@ add_executable(chessEngineV2 main.cpp
         magicBitboards.h
         magicBitboards.cpp
         engineConstants.h
-        moveOrderer.h
-        moveOrderer.cpp)
+        Evaluator.h
+        Evaluator.cpp)

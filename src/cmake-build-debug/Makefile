@@ -177,6 +177,30 @@ Engine.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Engine.cpp.s
 .PHONY : Engine.cpp.s
 
+Evaluator.o: Evaluator.cpp.o
+.PHONY : Evaluator.o
+
+# target to build an object file
+Evaluator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Evaluator.cpp.o
+.PHONY : Evaluator.cpp.o
+
+Evaluator.i: Evaluator.cpp.i
+.PHONY : Evaluator.i
+
+# target to preprocess a source file
+Evaluator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Evaluator.cpp.i
+.PHONY : Evaluator.cpp.i
+
+Evaluator.s: Evaluator.cpp.s
+.PHONY : Evaluator.s
+
+# target to generate assembly for a file
+Evaluator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Evaluator.cpp.s
+.PHONY : Evaluator.cpp.s
+
 Game.o: Game.cpp.o
 .PHONY : Game.o
 
@@ -249,30 +273,6 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-moveOrderer.o: moveOrderer.cpp.o
-.PHONY : moveOrderer.o
-
-# target to build an object file
-moveOrderer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/moveOrderer.cpp.o
-.PHONY : moveOrderer.cpp.o
-
-moveOrderer.i: moveOrderer.cpp.i
-.PHONY : moveOrderer.i
-
-# target to preprocess a source file
-moveOrderer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/moveOrderer.cpp.i
-.PHONY : moveOrderer.cpp.i
-
-moveOrderer.s: moveOrderer.cpp.s
-.PHONY : moveOrderer.s
-
-# target to generate assembly for a file
-moveOrderer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/moveOrderer.cpp.s
-.PHONY : moveOrderer.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -288,6 +288,9 @@ help:
 	@echo "... Engine.o"
 	@echo "... Engine.i"
 	@echo "... Engine.s"
+	@echo "... Evaluator.o"
+	@echo "... Evaluator.i"
+	@echo "... Evaluator.s"
 	@echo "... Game.o"
 	@echo "... Game.i"
 	@echo "... Game.s"
@@ -297,9 +300,6 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... moveOrderer.o"
-	@echo "... moveOrderer.i"
-	@echo "... moveOrderer.s"
 .PHONY : help
 
 

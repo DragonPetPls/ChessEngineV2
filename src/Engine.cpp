@@ -4,7 +4,7 @@
 
 #include "Engine.h"
 #include "Game.h"
-#include "moveOrderer.h"
+#include "Evaluator.h"
 #include  <cmath>
 #include <thread>
 
@@ -72,145 +72,9 @@ void Engine::stopSearch() {
 }
 
 
-int Engine::evalPosition(Game &g) {
-    evalCounter++;
-    switch (g.getStatus()) {
-        case DRAW:
-            return 0;
-        case CHECKMATE:
-            return LOSS + g.moveCount;
-        default:
-            break;
-    }
-
-    //Getting piece value
-    std::vector<coord> pieceLocations[12];
-    for (int i = 0; i < 12; i++) {
-        pieceLocations[i] = g.locatePieces(g.getPieceBoards()[i]);
-    }
-
-    //Checking how endgame it is:
-    int value = 0;
-    value += pieceLocations[ROOK + WHITE].size() * 5;
-    value += pieceLocations[ROOK + BLACK].size() * 5;
-    value += pieceLocations[QUEEN + WHITE].size() * 9;
-    value += pieceLocations[QUEEN + BLACK].size() * 9;
-    value += pieceLocations[KNIGHT + WHITE].size() * 3;
-    value += pieceLocations[KNIGHT + BLACK].size() * 3;
-    value += pieceLocations[BISHOP + WHITE].size() * 3;
-    value += pieceLocations[BISHOP + BLACK].size() * 3;
-
-    int endgame = 10 * (value <= 7) + (-0.5 * value + 13) * (value > 7 && value < 26);
-
-    int eval = 0;
-    for (int i = 0; i < 6; i++) {
-        eval += (pieceLocations[i + g.getWhoToMove()].size() * (eg_value[i] * endgame + mg_value[i] * (10 - endgame)))/10;
-        eval -= (pieceLocations[i + g.getWhoNotToMove()].size() * (eg_value[i] * endgame + mg_value[i] * (10 - endgame)))/10;
-    }
-
-    for (int i = 0; i < 6; i++) {
-        for (coord c: pieceLocations[i + g.getWhoToMove()]) {
-            eval += getSquareValue(i + g.getWhoToMove(), c, endgame);
-        }
-        for (coord c: pieceLocations[i + g.getWhoNotToMove()]) {
-            eval -= getSquareValue(i + g.getWhoNotToMove(), c, endgame);
-        }
-    }
-
-    //Checking for passed pawns
-    int whiteEval = 0;
-    for(coord c: pieceLocations[WHITE + PAWN]){
-        whiteEval += 400 * ((whitePassedPawns[c.x + 8 * c.y] & g.getPieceBoards()[PAWN + BLACK]) == 0);
-    }
-    int blackEval = 0;
-    for(coord c: pieceLocations[BLACK + PAWN]){
-        blackEval += 400 * ((blackPassedPawns[c.x + 8 * c.y] & g.getPieceBoards()[PAWN + WHITE]) == 0);
-    }
-    if(g.getWhoToMove() == WHITE){
-        eval += (whiteEval - blackEval)/(14 - endgame);
-    } else {
-        eval += (blackEval - whiteEval)/(14 - endgame);
-    }
 /*
-    //King pawn distance:
-    int xKing = Game::getXCoord(g.getPieceBoards()[KING + g.getWhoToMove()]);
-    int yKing = Game::getYCoord(g.getPieceBoards()[KING + g.getWhoToMove()]);
-    auto pawnLocation = Game::locatePieces(g.getPieceBoards()[PAWN + g.getWhoToMove()]);
-    int distance = 0;
-    for(coord c: pawnLocation){
-        distance += std::min(abs(xKing - c.x), abs(yKing - c.y));
-
-        //Bonus for pawns protecting other pawns
-       eval += pawnProtectionBonus * ((g.getPieceBoards()[g.getWhoToMove() + PAWN] & Game::generateBitboard(c.x + 1, c.y + 1)) != 0);
-       eval += pawnProtectionBonus * ((g.getPieceBoards()[g.getWhoToMove() + PAWN] & Game::generateBitboard(c.x - 1, c.y + 1)) != 0);
-    }
-    eval -= distance * endgame;
-
-    //King pawn distance:
-    xKing = Game::getXCoord(g.getPieceBoards()[KING + g.getWhoNotToMove()]);
-    yKing = Game::getYCoord(g.getPieceBoards()[KING + g.getWhoNotToMove()]);
-    pawnLocation = Game::locatePieces(g.getPieceBoards()[PAWN + g.getWhoNotToMove()]);
-    distance = 0;
-    for(coord c: pawnLocation){
-        distance += std::min(abs(xKing - c.x), abs(yKing - c.y));
-
-        //Bonus for pawns protecting other pawns
-       eval -= pawnProtectionBonus * ((g.getPieceBoards()[g.getWhoNotToMove() + PAWN] & Game::generateBitboard(c.x + 1, c.y + 1)) != 0);
-       eval -= pawnProtectionBonus * ((g.getPieceBoards()[g.getWhoNotToMove() + PAWN] & Game::generateBitboard(c.x - 1, c.y + 1)) != 0);
-    }
-    eval += distance * endgame;
-    */
-    return eval;
-}
-
-/*
- * Returns the value a piece gets due to being on a square. the int endgame is how much endgame tables shuld be weighted,
- * with 10 being only endgame and 0 only midgame
+ * Performs search
  */
-int Engine::getSquareValue(piece p, coord c, int endgame) {
-
-    int y = c.y * (p < 6) + (7 - c.y) * (p >= 6);
-    int index = (7 - y) * 8 + c.x;
-    p = p - 6 * (p > 5);
-
-    int endgameValue;
-    int midgameValue;
-    switch (p) {
-        case QUEEN:
-            endgameValue = eg_queen_table[index];
-            midgameValue = mg_queen_table[index];
-            break;
-        case ROOK:
-            endgameValue = eg_rook_table[index];
-            midgameValue = mg_rook_table[index];
-            break;
-        case BISHOP:
-            endgameValue = eg_bishop_table[index];
-            midgameValue = mg_bishop_table[index];
-            break;
-        case KNIGHT:
-            endgameValue = eg_knight_table[index];
-            midgameValue = mg_knight_table[index];
-            break;
-        case PAWN:
-            endgameValue = eg_pawn_table[index];
-            midgameValue = mg_pawn_table[index];
-            break;
-        case KING:
-            endgameValue = eg_king_table[index];
-            midgameValue = mg_king_table[index];
-            break;
-        default:
-            // Handle the case where the piece 'p' is invalid or unrecognized
-            endgameValue = 0;
-            midgameValue = 0;
-            break;
-    }
-
-    //Weighting differently depending on the endgame factor
-    return (endgameValue * endgame + midgameValue * (10 - endgame))/10;
-}
-
 int Engine::search(Game g, int toDepth) {
     if(toDepth != MAX){
         keepRunning = true;
@@ -223,7 +87,7 @@ int Engine::search(Game g, int toDepth) {
     int score;
 
     if(g.getStatus() != ON_GOING){
-        return evalPosition(g);
+        return Evaluator::evalPosition(g, -MINUS_INF);
     }
 
     while (keepRunning && (depth <= toDepth)) {
@@ -250,6 +114,9 @@ int Engine::search(Game g, int toDepth) {
     return score;
 }
 
+/*
+ * A standart negamax function with multiple improvements
+ */
 int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
     int nBestCon = UNKNOWN;
 
@@ -261,7 +128,7 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
     if (g.getStatus() != ON_GOING) {
         //Position is the end of the game
         if (hashTable.find(g.toKey()) == hashTable.end()) {
-            setNode(g, evalPosition(g), 0, MINUS_INF, PLUS_INF, true);
+            setNode(g, Evaluator::evalPosition(g, beta), 0, MINUS_INF, PLUS_INF, true);
         }
         return hashTable[g.toKey()].score;
     }
@@ -292,7 +159,7 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
     //Going though future moves
     auto next = g.getAllPseudoLegalMoves();
     int bestCon = UNKNOWN;
-    moveOrderer o;
+    Evaluator o;
     auto order = o.rankMoves(g, next, nBestCon);
     bool failedHigh = false;
     int highestScore = LOSS;
@@ -371,7 +238,7 @@ int Engine::quiesce(Game &g, int alpha, int beta, int depth) {
         return 0;
     }
 
-    int stand_pat = evalPosition(g);
+    int stand_pat = Evaluator::evalPosition(g, beta);
     //We return if the move was worse than the original position
 
     if(stand_pat > beta){
@@ -392,7 +259,7 @@ int Engine::quiesce(Game &g, int alpha, int beta, int depth) {
     }
 
     auto next = g.getAllPseudoLegalMoves();
-    moveOrderer mo;
+    Evaluator mo{};
     auto selection = mo.filterQuiesceCandidates(g, next);
     for(int index: selection){
         g.doMove(next[index]);

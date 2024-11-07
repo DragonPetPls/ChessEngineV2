@@ -205,4 +205,5 @@ CMakeFiles/chessEngineV2.dir/Communication.cpp.o: \
  /usr/include/c++/14.2.0/bits/erase_if.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h \
- /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Evaluator.h

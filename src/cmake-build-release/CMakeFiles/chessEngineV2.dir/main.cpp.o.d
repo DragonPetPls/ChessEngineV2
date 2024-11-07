@@ -202,4 +202,5 @@ CMakeFiles/chessEngineV2.dir/main.cpp.o: \
  /usr/include/c++/14.2.0/bits/shared_ptr_base.h \
  /usr/include/c++/14.2.0/bits/unique_ptr.h \
  /usr/include/c++/14.2.0/ext/concurrence.h \
- /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Evaluator.h
