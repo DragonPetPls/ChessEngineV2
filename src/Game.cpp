@@ -5,6 +5,7 @@
 #include <iostream>
 #include <random>
 #include "Game.h"
+#include "Evaluator.h"
 
 void Game::printGame() {
 
@@ -148,6 +149,8 @@ void Game::loadStartingPosition() {
     while (!pastHashes.empty()) {
         pastHashes.pop_back();
     }
+
+    eval = Evaluator::simpleEval(*this);
 }
 
 /*
@@ -166,6 +169,10 @@ void Game::doMove(move m) {
     past.castlingRights = this->castleRights;
     past.capturedPiece = NONE;
     past.counterToDraw = counterToDraw;
+    past.prevEvaluation = eval;
+
+    //Adjusting evaluation
+    eval = -eval - Evaluator::getEvalDifference(m, *this);
 
     counterToDraw++;
 
@@ -314,10 +321,16 @@ int Game::getXCoord(bitboard board) {
     return x;
 }
 
+/*
+ * Generates a bitboard with the given square selected
+ */
 bitboard Game::generateBitboard(int x, int y) {
     return ROWS[y] & COLLOMS[x];
 }
 
+/*
+ * Returns the y-Coord of a piece on a bitboard with exactly one square
+ */
 int Game::getYCoord(bitboard board) {
     int y = 0;
     y += ((board & ROW_ITERATION[0]) != 0) * 4;
@@ -326,6 +339,9 @@ int Game::getYCoord(bitboard board) {
     return y;
 }
 
+/*
+ * Undoes the last move
+ */
 void Game::undoMove() {
     currentStatus = TBD;
     moveCount--;
@@ -385,6 +401,9 @@ void Game::undoMove() {
 
     //Restoring counter till draw
     counterToDraw = past.counterToDraw;
+
+    //Restoring prev Eval
+    eval = past.prevEvaluation;
 
     //Popping the stack
     pastMoves.pop();
@@ -1058,6 +1077,8 @@ void Game::loadFen(std::string &fen) {
         }
         counter++;
     }
+
+    eval = Evaluator::simpleEval(*this);
     printGame();
 }
 
@@ -1101,6 +1122,7 @@ std::vector<bitboard> Game::generateKnightFinalSquares(coord knightLocation) {
 }
 
 Game::Game() {
+    Evaluator::initEvaluator();
     initSquaresLookup();
 }
 
@@ -1386,4 +1408,12 @@ bool Game::isMovePlayable() {
     }
 
     return false;
+}
+
+int Game::getEval() const {
+    return eval;
+}
+
+void Game::setEval(int eval) {
+    Game::eval = eval;
 }

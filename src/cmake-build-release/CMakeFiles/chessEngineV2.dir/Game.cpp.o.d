@@ -201,4 +201,6 @@ CMakeFiles/chessEngineV2.dir/Game.cpp.o: \
  /usr/include/c++/14.2.0/bits/enable_special_members.h \
  /usr/include/c++/14.2.0/bits/erase_if.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
- /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Evaluator.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h
