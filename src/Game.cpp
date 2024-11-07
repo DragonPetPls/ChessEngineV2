@@ -210,11 +210,11 @@ void Game::doMove(move m) {
              && m.startingSquare & KING_SHORT_CASTLE_BOARD
              && m.finalSquare & KING_SHORT_CASTLE_BOARD);
     pieceBoards[whoToMove + ROOK] ^= ROOK_LONG_CASTLE_MOVEMENT[whoToMove / BLACK] *
-            (m.movingPiece == KING
-            && m.startingSquare &
-            KING_LONG_CASTLE_BOARD
-            && m.finalSquare &
-            KING_LONG_CASTLE_BOARD);
+                                     (m.movingPiece == KING
+                                      && m.startingSquare &
+                                         KING_LONG_CASTLE_BOARD
+                                      && m.finalSquare &
+                                         KING_LONG_CASTLE_BOARD);
 
 
     //Adjusting en passant
@@ -346,39 +346,31 @@ void Game::undoMove() {
     //Placing it back to the old square;
     pieceBoards[whoNotToMove + past.regularMove.movingPiece] |= past.regularMove.startingSquare;
 
-    //Restoring captured piece
-    if (past.capturedPiece != NONE) {
-        if (past.capturedPiece != EN_PASSANT_PAWN) {
-            //Restoring a regular piece
-            pieceBoards[whoToMove + past.capturedPiece] |= past.regularMove.finalSquare;
-        } else {
-            //Restoring a pawn destroyed from en passant
-            int x = getXCoord(past.regularMove.finalSquare);
-            int y = getYCoord(past.regularMove.startingSquare);
-            pieceBoards[whoToMove + PAWN] |= generateBitboard(x, y);
-        }
-    }
+    //Restoring captured piece, including en passant
+    pieceBoards[whoToMove + past.capturedPiece] |=
+            past.regularMove.finalSquare * (past.capturedPiece != NONE && past.capturedPiece != EN_PASSANT_PAWN);
+    bitboard enPassantCaptureSquare =
+            ((past.regularMove.startingSquare << 1) | (past.regularMove.startingSquare >> 1)) &
+            ((past.regularMove.finalSquare >> 8) | (past.regularMove.finalSquare << 8));
+    pieceBoards[PAWN + whoToMove] |= enPassantCaptureSquare * (past.capturedPiece == EN_PASSANT_PAWN);
 
     //Undoing castle
-    if (past.regularMove.movingPiece == KING
-        && past.regularMove.startingSquare & KING_SHORT_CASTLE_BOARD
-        && past.regularMove.finalSquare & KING_SHORT_CASTLE_BOARD) {
-        //Moving the rook
-        pieceBoards[whoNotToMove + ROOK] ^= ROOK_SHORT_CASTLE_MOVEMENT[whoNotToMove /
-                                                                       BLACK]; //Dividing by black to get to 1 if BLACK is to move
-    } else if (past.regularMove.movingPiece == KING
-               && past.regularMove.startingSquare & KING_LONG_CASTLE_BOARD
-               && past.regularMove.finalSquare & KING_LONG_CASTLE_BOARD) {
-        //Moving the rook
-        pieceBoards[whoNotToMove + ROOK] ^= ROOK_LONG_CASTLE_MOVEMENT[whoNotToMove /
-                                                                      BLACK]; //Dividing by black to get to 1 if BLACK is to move
-    }
+    pieceBoards[whoNotToMove + ROOK] ^=
+            ROOK_SHORT_CASTLE_MOVEMENT[whoNotToMove / BLACK] * (past.regularMove.movingPiece == KING
+                                                                && past.regularMove.startingSquare &
+                                                                   KING_SHORT_CASTLE_BOARD
+                                                                &&
+                                                                past.regularMove.finalSquare & KING_SHORT_CASTLE_BOARD);
+    pieceBoards[whoNotToMove + ROOK] ^=
+            ROOK_LONG_CASTLE_MOVEMENT[whoNotToMove / BLACK] * (past.regularMove.movingPiece == KING
+                                                               &&
+                                                               past.regularMove.startingSquare & KING_LONG_CASTLE_BOARD
+                                                               &&
+                                                               past.regularMove.finalSquare & KING_LONG_CASTLE_BOARD);
 
     //Undoing promotion
-    if (past.regularMove.promotion != NONE) {
-        pieceBoards[whoNotToMove +
-                    past.regularMove.promotion] &= ~past.regularMove.finalSquare; //Removing the promoted piece
-    }
+    pieceBoards[whoNotToMove + past.regularMove.promotion] &=
+            ~past.regularMove.finalSquare * (past.regularMove.promotion != NONE); //Removing the promoted piece
 
     //Restoring castle rights
     castleRights = past.castlingRights;
