@@ -467,6 +467,9 @@ int Evaluator::getEvalDifference(move m, Game &g) {
     oldEval = SIMPLE_TABLES[m.movingPiece][7 - fromX + 8 * fromY];
     newEval = SIMPLE_TABLES[m.movingPiece][7 - toX + 8 * toY];
 
+    //Promotions
+    newEval += (m.promotion != NONE) * (SIMPLE_VALUES[m.promotion] + SIMPLE_TABLES[m.promotion][7 - toX + 8 * toY] - SIMPLE_VALUES[PAWN] - newEval);
+
     //Checking captures
     for(int i = 0; i < 5; i++){
         newEval += SIMPLE_VALUES[i] * ((g.getPieceBoards()[i + g.getWhoNotToMove()] & m.finalSquare) != 0);

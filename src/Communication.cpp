@@ -163,7 +163,6 @@ void Communication::position(std::string command) {
             fen += arguments[i] + " ";
         }
         g.loadFen(fen);
-        g.printGame();
     }
 
     if (arguments.size() < moveIndex + 1){
@@ -173,8 +172,7 @@ void Communication::position(std::string command) {
     if(arguments[moveIndex] == "moves"){
         for(int i = moveIndex + 1; i < arguments.size(); i++){
             move m = g.stringToMove(arguments[i]);
-           g.doMove(m);
-           std::cout << "eval: " << g.getEval() << "\n";
+            g.doMove(m);
 #ifdef DEBUG
             output.lock();
             std::cout << m.getFromHorizontal() << m.getFromVertical() << m.getToHorizontal() << m.getToVertical() << m.getPromoteTo() << std::endl;
