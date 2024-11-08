@@ -111,7 +111,7 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
     //Exit condition
     if (g.getStatus() != ON_GOING) {
         //Position is the end of the game
-        node* nodePtr = transpositionTable.readEntry(g, alpha, beta, depth);
+        node* nodePtr = transpositionTable.readEntry(g, alpha, beta, 0);
         if (nodePtr == nullptr) {
             int score = Evaluator::evalPosition(g, beta);
             setNode(g, score, 0, MINUS_INF, PLUS_INF, true);
@@ -123,25 +123,20 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
     //Checking existing hashtable if the entry already exists
     node* nodePtrRead = transpositionTable.readEntry(g, alpha, beta, depth);
     if (nodePtrRead != nullptr) {
-        node *n = nodePtrRead;
+        return nodePtrRead->score;
+    }
 
-        if (n->depth >= depth
-            && n->alpha <= alpha
-            && n->beta >= beta) {
-            return n->score;
-        } else if (n->isOver) {
-            return n->score;
-        }
-        nBestCon = n->bestCon;
-        if(n->score < alpha - 100){
-            depth--;
-        }
+
+    node* prvNode = transpositionTable.readEntry(g, PLUS_INF, MINUS_INF, depth - 1);
+    if(prvNode != nullptr){
+        nBestCon = prvNode->bestCon;
     }
 
     if (depth <= 0) {
         //Exit due to depth
-        setNode(g, quiesce(g, alpha, beta), depth, alpha, beta, false);
-        return transpositionTable.readEntry(g, alpha, beta, depth)->score;
+        int score = quiesce(g, alpha, beta);
+        setNode(g, score, depth, alpha, beta, false);
+        return score;
     }
 
     //Going though future moves
@@ -208,6 +203,11 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
 }
 
 void Engine::setNode(Game &g, int score, int depth, int alpha, int beta, bool isOver, int bestCon) {
+
+    if(!keepRunning){
+        return;
+    }
+
     node *n = transpositionTable.writeEntry(g, alpha, beta, depth);
     n->depth = depth;
     n->score = score;
