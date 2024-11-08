@@ -143,12 +143,7 @@ void Game::loadStartingPosition() {
     whoNotToMove = BLACK;
     counterToDraw = 0;
 
-    while (!pastMoves.empty()) {
-        pastMoves.pop();
-    }
-    while (!pastHashes.empty()) {
-        pastHashes.pop_back();
-    }
+    historyIndex = -1;
 
     eval = Evaluator::simpleEval(*this);
 }
@@ -160,7 +155,8 @@ void Game::doMove(move m) {
     currentStatus = TBD;
     moveCount++;
     //Storing the current hash
-    pastHashes.push_back(std::hash<Game>()(*this));
+    historyIndex++;
+    pastHashes[historyIndex] = std::hash<Game>()(*this);
 
     //Saving the move in case you might undo it later
     pastMove past;
@@ -240,7 +236,7 @@ void Game::doMove(move m) {
     counterToDraw *= 1 * !(past.regularMove.movingPiece == PAWN || past.capturedPiece != NONE);
 
     //Adding the move to last moves
-    pastMoves.push(past);
+    moveHistory[historyIndex] = past;
 }
 
 
@@ -338,7 +334,7 @@ void Game::undoMove() {
     currentStatus = TBD;
     moveCount--;
     //Getting the last move
-    pastMove &past = pastMoves.top();
+    pastMove &past = moveHistory[historyIndex];
 
     //Removing the piece
     pieceBoards[whoNotToMove + past.regularMove.movingPiece] &= ~past.regularMove.finalSquare;
@@ -390,8 +386,7 @@ void Game::undoMove() {
     eval = past.prevEvaluation;
 
     //Popping the stack
-    pastMoves.pop();
-    pastHashes.pop_back();
+    historyIndex--;
 }
 
 /*
@@ -826,8 +821,8 @@ status Game::getStatus() {
     //Checking 3-fold repetion
     uint64_t hash = std::hash<Game>()(*this);
     int counter = 0;
-    for (uint64_t pastHash: pastHashes) {
-        counter += hash == pastHash;
+    for (int i = 0; i <= historyIndex; i++) {
+        counter += hash == pastHashes[i];
     }
     if (counter >= 2) {
         currentStatus = DRAW;
@@ -909,12 +904,7 @@ void Game::loadFen(std::string &fen) {
     moveCount = 0;
 
     //deleting all old stuff
-    while (!pastMoves.empty()) {
-        pastMoves.pop();
-    }
-    while (!pastHashes.empty()) {
-        pastHashes.pop_back();
-    }
+    historyIndex = -1;
 
     for (int i = 0; i < 12; i++) {
         pieceBoards[i] = 0;

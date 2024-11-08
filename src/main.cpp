@@ -59,7 +59,7 @@ int main() {
     std::chrono::duration<double> elapsed = end - start;
     std::cout << "The test took " << elapsed.count() << " seconds" << std::endl;
     std::cout << nodesSearched << " nodes were searched." << std::endl;
-    std::cout << nodesSearched / elapsed.count() << " nodes per second" << std::endl;
+    std::cout << nodesSearched / (elapsed.count() * 1000000) << " million nodes per second" << std::endl;
 
 #endif
 

@@ -66,8 +66,6 @@ class Game {
 private:
     uint8_t currentStatus = TBD;
 
-    std::list<uint64_t> pastHashes;
-
     squaresLookup kingLookup[64];
 
     void initSquaresLookup();
@@ -81,26 +79,20 @@ private:
     //This evaluation is updated whenever a move is made to allow for a fast evaluation which can the be refined if it seems worth the time
     int eval = 0;
 
-    std::stack<pastMove> pastMoves;
+
+    uint64_t pastHashes[1000];
+    pastMove moveHistory[1000];
+    int historyIndex = 0;
 
     std::vector<bitboard> &getKnightFinalSquares(coord location);
-
     bitboard &getKnightReachableSquares(coord location);
-
     std::vector<bitboard> &getKingFinalSquares(coord location);
-
     bitboard &getKingReachableSquares(coord location);
-
     std::vector<bitboard> generateKnightFinalSquares(coord knightLocation);
-
     std::vector<bitboard> generateKingFinalSquares(coord kingLocation);
-
     bool isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap);
-
     bool isSquareUnderAttack(coord square, color attackingColor);
-
     bool isMovePlayable();
-
     int counterToDraw = 0;
 
 public:
