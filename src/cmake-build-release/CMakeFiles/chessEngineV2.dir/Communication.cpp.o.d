@@ -206,4 +206,5 @@ CMakeFiles/chessEngineV2.dir/Communication.cpp.o: \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/constants.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/magicBitboards.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/engineConstants.h \
+ /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/TranspositionTable.h \
  /home/fabian/CLionProjects/ChessEngineV2/ChessEngineV2/src/Evaluator.h
