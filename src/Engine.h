@@ -12,7 +12,6 @@
 #include <condition_variable>
 #include "Game.h"
 #include "engineConstants.h"
-#include "TranspositionTable.h"
 
 class Engine {
 private:
@@ -28,7 +27,7 @@ private:
     std::condition_variable cv;
 
     int negamax(Game &g, int depth, int alpha, int beta, int toDepth);
-    TranspositionTable transpositionTable;
+    std::unordered_map<GameKey, node> hashTable;
     void setNode(Game &g, int score, int depth, int alpha = MINUS_INF, int beta = PLUS_INF, bool isOver = false, int bestCon = UNKNOWN);
     int quiesce(Game &g, int alpha, int beta, int depth = 0);
 

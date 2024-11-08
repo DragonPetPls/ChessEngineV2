@@ -18,6 +18,4 @@ add_executable(chessEngineV2 main.cpp
         magicBitboards.cpp
         engineConstants.h
         Evaluator.h
-        Evaluator.cpp
-        TranspositionTable.h
-        TranspositionTable.cpp)
+        Evaluator.cpp)
