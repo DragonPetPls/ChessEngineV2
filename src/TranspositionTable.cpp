@@ -38,6 +38,7 @@ node* TranspositionTable::readEntry(Game &game, int alpha, int beta, int depth) 
         if(!(table[hash].key == key)){
             hash += DIFFERENT_POSITION;
             hash %= TABLE_SIZE;
+            continue;
         }
 
         //Checking if the window is right
@@ -73,6 +74,7 @@ node *TranspositionTable::writeEntry(Game &game, int alpha, int beta, int depth)
         if(!(table[hash].key == key)){
             hash += DIFFERENT_POSITION;
             hash %= TABLE_SIZE;
+            continue;
         }
 
         //Checking if the window is right

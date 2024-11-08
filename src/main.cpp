@@ -9,7 +9,7 @@
 
 //#define GAME_DEBUG
 //#define MAGIC_DEBUG
-#define ENGINE_DEBUG
+//#define ENGINE_DEBUG
 
 #ifdef GAME_DEBUG
 int nodesSearched = 0;
