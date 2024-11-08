@@ -151,7 +151,7 @@ void Game::loadStartingPosition() {
 /*
  * This function executes the given move, it is assumed the move is legal
  */
-void Game::doMove(move m) {
+void Game::doMove(move &m) {
     currentStatus = TBD;
     moveCount++;
     //Storing the current hash
@@ -159,7 +159,7 @@ void Game::doMove(move m) {
     pastHashes[historyIndex] = std::hash<Game>()(*this);
 
     //Saving the move in case you might undo it later
-    pastMove past;
+    pastMove &past = moveHistory[historyIndex];
     past.regularMove = m;
     past.enPassant = this->enPassant;
     past.castlingRights = this->castleRights;
@@ -234,9 +234,6 @@ void Game::doMove(move m) {
 
     //reseting counter to draw if neccesary
     counterToDraw *= 1 * !(past.regularMove.movingPiece == PAWN || past.capturedPiece != NONE);
-
-    //Adding the move to last moves
-    moveHistory[historyIndex] = past;
 }
 
 

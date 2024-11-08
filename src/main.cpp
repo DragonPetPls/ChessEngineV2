@@ -88,7 +88,7 @@ int main() {
                           "8/1p2Rpkp/2p2p1b/p4B2/P7/6KP/1P1r1PP1/8 b - - 5 30",
                           "3rrbk1/1pp2p1p/2n2p2/p3p3/P2PB3/2P1B2P/1P3PP1/3RR1K1 b - - 0 18",
                           "4R3/8/2p2p2/2k5/3bB3/p1r3PP/4KP2/8 b - - 5 46"};
-    int depth[12] = {7, 7, 7, 7, 7, 7, 13, 7, 7, 7, 7, 7};
+    int depth[12] = {8, 8, 8, 8, 8, 8, 13, 8, 8, 8, 8, 8};
     Evaluator::evalCounter = 0;
 
     auto start = std::chrono::high_resolution_clock::now();

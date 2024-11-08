@@ -9,6 +9,7 @@
 uint64_t Evaluator::evalCounter;
 bitboard Evaluator::whitePassedPawns[64];
 bitboard Evaluator::blackPassedPawns[64];
+const int *Evaluator::SIMPLE_TABLES[6] = {SIMPLE_PAWN_TABLE, SIMPLE_KNIGHT_TABLE, SIMPLE_BISHOP_TABLE, SIMPLE_ROOK_TABLE, SIMPLE_QUEEN_TABLE, SIMPLE_KING_TABLE};
 
 int Evaluator::getNudge(move &m, Game &g) {
 
@@ -463,32 +464,8 @@ int Evaluator::getEvalDifference(move m, Game &g) {
 
     toY = (7 - toY) * (g.getWhoToMove() == WHITE) + toY * (g.getWhoToMove() == BLACK);
     fromY = (7 - fromY) * (g.getWhoToMove() == WHITE) + fromY * (g.getWhoToMove() == BLACK);
-
-    switch(m.movingPiece){
-        case PAWN:
-            oldEval = SIMPLE_PAWN_TABLE[7 - fromX + 8 * fromY];
-            newEval = SIMPLE_PAWN_TABLE[7 - toX + 8 * toY];
-            break;
-        case KNIGHT:
-            oldEval = SIMPLE_KNIGHT_TABLE[7 - fromX + 8 * fromY];
-            newEval = SIMPLE_KNIGHT_TABLE[7 - toX + 8 * toY];
-            break;
-        case BISHOP:
-            oldEval = SIMPLE_BISHOP_TABLE[7 - fromX + 8 * fromY];
-            newEval = SIMPLE_BISHOP_TABLE[7 - toX + 8 * toY];
-            break;
-        case ROOK:
-            oldEval = SIMPLE_ROOK_TABLE[7 - fromX + 8 * fromY];
-            newEval = SIMPLE_ROOK_TABLE[toX + 8 * toY];
-            break;
-        case QUEEN:
-            oldEval = SIMPLE_QUEEN_TABLE[7 - fromX + 8 * fromY];
-            newEval = SIMPLE_QUEEN_TABLE[7 - toX + 8 * toY];
-            break;
-        default:
-            oldEval = 0;
-            newEval = 0;
-    }
+    oldEval = SIMPLE_TABLES[m.movingPiece][7 - fromX + 8 * fromY];
+    newEval = SIMPLE_TABLES[m.movingPiece][7 - toX + 8 * toY];
 
     //Checking captures
     for(int i = 0; i < 5; i++){
