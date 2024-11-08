@@ -32,6 +32,8 @@ private:
     static int getSquareValue(piece p, coord c, int endgame);
     static int getSquareValue(bitboard square, color pieceColor, piece pieceType);
 
+    static const int* SIMPLE_TABLES[6];
+
 public:
     static void initEvaluator();
 

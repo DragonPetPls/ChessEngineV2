@@ -46,22 +46,6 @@ move Engine::getMove(Game g, int timeLeft, int incTime, int moveTime) {
         searchThread.join();  // Ensures the thread completes execution
     }
 
-
-    /*
-    //Getting the best move from the hash table
-    for(int i = 0; i < next.size(); i++){
-        g.doMove(next[i]);
-        if(!g.isPositionLegal()){
-            continue;
-        }
-        if(hashTable.find(g.toKey()) == hashTable.end()){
-            if(bestScore == MINUS_INF){
-                index = i;
-            }
-        }
-
-        int score = hashTable[g.toKey()].score;
-     */
     auto next = g.getAllPseudoLegalMoves();
     return next[bestContinuation];
 

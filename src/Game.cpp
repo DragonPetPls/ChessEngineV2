@@ -143,12 +143,7 @@ void Game::loadStartingPosition() {
     whoNotToMove = BLACK;
     counterToDraw = 0;
 
-    while (!pastMoves.empty()) {
-        pastMoves.pop();
-    }
-    while (!pastHashes.empty()) {
-        pastHashes.pop_back();
-    }
+    historyIndex = -1;
 
     eval = Evaluator::simpleEval(*this);
 }
@@ -156,24 +151,25 @@ void Game::loadStartingPosition() {
 /*
  * This function executes the given move, it is assumed the move is legal
  */
-void Game::doMove(move m) {
+void Game::doMove(move &m) {
     currentStatus = TBD;
     moveCount++;
     //Storing the current hash
-    pastHashes.push_back(std::hash<Game>()(*this));
+    historyIndex++;
+    pastHashes[historyIndex] = std::hash<Game>()(*this);
 
     //Saving the move in case you might undo it later
-    pastMove past;
+    pastMove &past = moveHistory[historyIndex];
     past.regularMove = m;
     past.enPassant = this->enPassant;
     past.castlingRights = this->castleRights;
-    past.capturedPiece = NONE;
     past.counterToDraw = counterToDraw;
     past.prevEvaluation = eval;
 
     //Adjusting evaluation
     eval = -eval - Evaluator::getEvalDifference(m, *this);
 
+    //Increasing the counter for 50 move rule
     counterToDraw++;
 
     //Removes the piece from its original position
@@ -182,53 +178,47 @@ void Game::doMove(move m) {
     pieceBoards[whoToMove + m.movingPiece] |= m.finalSquare;
 
     //Removing the piece
+    past.capturedPiece = 0;
     for (int i = 0; i < 6; i++) {
-        if (pieceBoards[i + whoNotToMove] & m.finalSquare) {
-            past.capturedPiece = i;
-        }
+        past.capturedPiece += (i + 1) * ((pieceBoards[i + whoNotToMove] & m.finalSquare) != 0);
         pieceBoards[i + whoNotToMove] &= ~m.finalSquare;
     }
+    past.capturedPiece += (1 + NONE) * (past.capturedPiece == 0);
+    past.capturedPiece--;
 
     //Promotion
-    if (m.promotion != NONE) {
-        pieceBoards[whoToMove + PAWN] &= ~m.finalSquare; //Removing the pawn again
-        pieceBoards[whoToMove + m.promotion] |= m.finalSquare; //Placing the promoted piece
-    }
+    pieceBoards[whoToMove + PAWN] &= ~(m.finalSquare * (m.promotion != NONE)); //Removing the pawn again
+    pieceBoards[whoToMove + m.promotion * (m.promotion != NONE)] |=
+            m.finalSquare * (m.promotion != NONE); //Placing the promoted piece
 
-    //Capturing en passant
-    if (m.movingPiece == PAWN
-        && past.capturedPiece == NONE
-        && getXCoord(m.startingSquare) != getXCoord(m.finalSquare)) {
-        int x = getXCoord(m.finalSquare);
-        int y = getYCoord(m.startingSquare);
-        pieceBoards[whoNotToMove + PAWN] &= ~generateBitboard(x, y);
-        past.capturedPiece = EN_PASSANT_PAWN;
-    }
+    //En passant
+    bitboard enPassantCaptureSquare =
+            ((m.startingSquare << 1) | (m.startingSquare >> 1)) & ((m.finalSquare >> 8) | (m.finalSquare << 8));
+    bitboard prevPawns = pieceBoards[PAWN + whoNotToMove];
+    pieceBoards[PAWN + whoNotToMove] &= ~(enPassantCaptureSquare *
+                                          ((m.movingPiece == PAWN) && (past.capturedPiece == NONE)));
+    past.capturedPiece += (EN_PASSANT_PAWN - past.capturedPiece) * (prevPawns != pieceBoards[PAWN + whoNotToMove]);
 
-    //Castle
-    if (m.movingPiece == KING
-        && m.startingSquare & KING_SHORT_CASTLE_BOARD
-        && m.finalSquare & KING_SHORT_CASTLE_BOARD) {
-        //Moving the rook
-        pieceBoards[whoToMove + ROOK] ^= ROOK_SHORT_CASTLE_MOVEMENT[whoToMove /
-                                                                    BLACK]; //Dividing by black to get to 1 if BLACK is to move
-    } else if (m.movingPiece == KING
-               && m.startingSquare & KING_LONG_CASTLE_BOARD
-               && m.finalSquare & KING_LONG_CASTLE_BOARD) {
-        //Moving the rook
-        pieceBoards[whoToMove + ROOK] ^= ROOK_LONG_CASTLE_MOVEMENT[whoToMove /
-                                                                   BLACK]; //Dividing by black to get to 1 if BLACK is to move
-    }
+    //Castling
+    pieceBoards[whoToMove + ROOK] ^=
+            ROOK_SHORT_CASTLE_MOVEMENT[whoToMove / BLACK] *   //Dividing by black to get to 1 if BLACK is to move
+            (m.movingPiece == KING
+             && m.startingSquare & KING_SHORT_CASTLE_BOARD
+             && m.finalSquare & KING_SHORT_CASTLE_BOARD);
+    pieceBoards[whoToMove + ROOK] ^= ROOK_LONG_CASTLE_MOVEMENT[whoToMove / BLACK] *
+                                     (m.movingPiece == KING
+                                      && m.startingSquare &
+                                         KING_LONG_CASTLE_BOARD
+                                      && m.finalSquare &
+                                         KING_LONG_CASTLE_BOARD);
+
 
     //Adjusting en passant
     enPassant = 0;
-    if (m.movingPiece == PAWN && (m.startingSquare & EN_PASSANT_STARTING_ROWS)
-        && (m.finalSquare & EN_PASSANT_ENDING_ROWS)) {
-        for (int i = 0; i < 8; i++) {
-            enPassant |= ((COLLOMS[i] & m.startingSquare) != 0) * (COLLOMS[i]);
-        }
-    } else {
-        enPassant = 0;
+    for (int i = 0; i < 8; i++) {
+        enPassant |= ((COLLOMS[i] & m.startingSquare) != 0) * (COLLOMS[i]) *
+                     (m.movingPiece == PAWN && (m.startingSquare & EN_PASSANT_STARTING_ROWS)
+                      && (m.finalSquare & EN_PASSANT_ENDING_ROWS));
     }
 
     //Adjusting Castle rights
@@ -243,12 +233,7 @@ void Game::doMove(move m) {
     whoNotToMove = x;
 
     //reseting counter to draw if neccesary
-    if (past.regularMove.movingPiece == PAWN || past.capturedPiece != NONE) {
-        counterToDraw = 0;
-    }
-
-    //Adding the move to last moves
-    pastMoves.push(past);
+    counterToDraw *= 1 * !(past.regularMove.movingPiece == PAWN || past.capturedPiece != NONE);
 }
 
 
@@ -346,7 +331,7 @@ void Game::undoMove() {
     currentStatus = TBD;
     moveCount--;
     //Getting the last move
-    pastMove &past = pastMoves.top();
+    pastMove &past = moveHistory[historyIndex];
 
     //Removing the piece
     pieceBoards[whoNotToMove + past.regularMove.movingPiece] &= ~past.regularMove.finalSquare;
@@ -354,39 +339,31 @@ void Game::undoMove() {
     //Placing it back to the old square;
     pieceBoards[whoNotToMove + past.regularMove.movingPiece] |= past.regularMove.startingSquare;
 
-    //Restoring captured piece
-    if (past.capturedPiece != NONE) {
-        if (past.capturedPiece != EN_PASSANT_PAWN) {
-            //Restoring a regular piece
-            pieceBoards[whoToMove + past.capturedPiece] |= past.regularMove.finalSquare;
-        } else {
-            //Restoring a pawn destroyed from en passant
-            int x = getXCoord(past.regularMove.finalSquare);
-            int y = getYCoord(past.regularMove.startingSquare);
-            pieceBoards[whoToMove + PAWN] |= generateBitboard(x, y);
-        }
-    }
+    //Restoring captured piece, including en passant
+    pieceBoards[whoToMove + past.capturedPiece] |=
+            past.regularMove.finalSquare * (past.capturedPiece != NONE && past.capturedPiece != EN_PASSANT_PAWN);
+    bitboard enPassantCaptureSquare =
+            ((past.regularMove.startingSquare << 1) | (past.regularMove.startingSquare >> 1)) &
+            ((past.regularMove.finalSquare >> 8) | (past.regularMove.finalSquare << 8));
+    pieceBoards[PAWN + whoToMove] |= enPassantCaptureSquare * (past.capturedPiece == EN_PASSANT_PAWN);
 
     //Undoing castle
-    if (past.regularMove.movingPiece == KING
-        && past.regularMove.startingSquare & KING_SHORT_CASTLE_BOARD
-        && past.regularMove.finalSquare & KING_SHORT_CASTLE_BOARD) {
-        //Moving the rook
-        pieceBoards[whoNotToMove + ROOK] ^= ROOK_SHORT_CASTLE_MOVEMENT[whoNotToMove /
-                                                                       BLACK]; //Dividing by black to get to 1 if BLACK is to move
-    } else if (past.regularMove.movingPiece == KING
-               && past.regularMove.startingSquare & KING_LONG_CASTLE_BOARD
-               && past.regularMove.finalSquare & KING_LONG_CASTLE_BOARD) {
-        //Moving the rook
-        pieceBoards[whoNotToMove + ROOK] ^= ROOK_LONG_CASTLE_MOVEMENT[whoNotToMove /
-                                                                      BLACK]; //Dividing by black to get to 1 if BLACK is to move
-    }
+    pieceBoards[whoNotToMove + ROOK] ^=
+            ROOK_SHORT_CASTLE_MOVEMENT[whoNotToMove / BLACK] * (past.regularMove.movingPiece == KING
+                                                                && past.regularMove.startingSquare &
+                                                                   KING_SHORT_CASTLE_BOARD
+                                                                &&
+                                                                past.regularMove.finalSquare & KING_SHORT_CASTLE_BOARD);
+    pieceBoards[whoNotToMove + ROOK] ^=
+            ROOK_LONG_CASTLE_MOVEMENT[whoNotToMove / BLACK] * (past.regularMove.movingPiece == KING
+                                                               &&
+                                                               past.regularMove.startingSquare & KING_LONG_CASTLE_BOARD
+                                                               &&
+                                                               past.regularMove.finalSquare & KING_LONG_CASTLE_BOARD);
 
     //Undoing promotion
-    if (past.regularMove.promotion != NONE) {
-        pieceBoards[whoNotToMove +
-                    past.regularMove.promotion] &= ~past.regularMove.finalSquare; //Removing the promoted piece
-    }
+    pieceBoards[whoNotToMove + past.regularMove.promotion] &=
+            ~past.regularMove.finalSquare * (past.regularMove.promotion != NONE); //Removing the promoted piece
 
     //Restoring castle rights
     castleRights = past.castlingRights;
@@ -406,8 +383,7 @@ void Game::undoMove() {
     eval = past.prevEvaluation;
 
     //Popping the stack
-    pastMoves.pop();
-    pastHashes.pop_back();
+    historyIndex--;
 }
 
 /*
@@ -418,7 +394,7 @@ std::vector<coord> Game::locatePieces(bitboard board) {
     locations.reserve(8);
 
     for (int x = 0; x < 8; x++) {
-        if(COLLOMS[x] & board){
+        if (COLLOMS[x] & board) {
             for (int y = 0; y < 8; y++) {
                 if ((board >> (7 - x + 8 * y)) & 1) {
                     coord c;
@@ -579,7 +555,7 @@ std::vector<move> Game::getAllPseudoLegalMoves() {
         auto diagonalPieceLocations = locatePieces(diagonalPieces);
         for (coord c: diagonalPieceLocations) {
             std::vector<bitboard> finalSquares = magic.getDiagonalFinalSquares(c.x, c.y, hitmap);
-                    // generateDiagonalPieceFinalSquares(c, hitmap);
+            // generateDiagonalPieceFinalSquares(c, hitmap);
             bitboard startingSquare = generateBitboard(c.x, c.y);
 
             //Checking for collision on each final square
@@ -606,16 +582,16 @@ std::vector<move> Game::getAllPseudoLegalMoves() {
         location.x = getXCoord(pieceBoards[KING + whoToMove]);
         location.y = getYCoord(pieceBoards[KING + whoToMove]);
         auto finalSquares = generateKingFinalSquares(location);
-        for(bitboard finalSquare: finalSquares){
-                //Checking for collision
-                if (!(finalSquare & ownHitmap)) {
-                    move m;
-                    m.startingSquare = pieceBoards[whoToMove + KING];
-                    m.finalSquare = finalSquare;
-                    m.movingPiece = KING;
-                    m.promotion = NONE;
-                    pseudoLegalMoves.push_back(m);
-                }
+        for (bitboard finalSquare: finalSquares) {
+            //Checking for collision
+            if (!(finalSquare & ownHitmap)) {
+                move m;
+                m.startingSquare = pieceBoards[whoToMove + KING];
+                m.finalSquare = finalSquare;
+                m.movingPiece = KING;
+                m.promotion = NONE;
+                pseudoLegalMoves.push_back(m);
+            }
         }
         //Castle
         if (whoToMove == WHITE) {
@@ -728,14 +704,14 @@ std::vector<move> Game::getAllPseudoLegalMoves() {
 /*
  * Generates all finalsquares a knight can reach from the starting square, not checking for collisions
  */
-std::vector<bitboard>& Game::getKnightFinalSquares(coord knightLocation) {
+std::vector<bitboard> &Game::getKnightFinalSquares(coord knightLocation) {
     return knightLookup[knightLocation.x + knightLocation.y * 8].finalSquares;
 }
 
 bool Game::isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap) {
 
     //Checking knight moves
-    if(getKnightReachableSquares(square) & pieceBoards[attackingColor + KNIGHT]){
+    if (getKnightReachableSquares(square) & pieceBoards[attackingColor + KNIGHT]) {
         return true;
     }
 
@@ -756,7 +732,7 @@ bool Game::isSquareUnderAttack(coord square, color attackingColor, bitboard hitm
 
     //Checking king attacks
     dangerousSquares = getKingReachableSquares(square);
-    if(dangerousSquares & pieceBoards[KING + attackingColor]){
+    if (dangerousSquares & pieceBoards[KING + attackingColor]) {
         return true;
     }
 
@@ -764,7 +740,7 @@ bool Game::isSquareUnderAttack(coord square, color attackingColor, bitboard hitm
     int vy = -1 * (attackingColor == WHITE) + 1 * (attackingColor == BLACK);
     for (int i = 0; i < 2; i++) {
         int vx = 1 - 2 * i;
-        if(vx + square.x > 7 || vx + square.x < 0 || vy + square.y > 7 || vy + square.y < 0){
+        if (vx + square.x > 7 || vx + square.x < 0 || vy + square.y > 7 || vy + square.y < 0) {
             continue;
         }
 
@@ -806,7 +782,7 @@ bool Game::isKingSafe(color whichKing) {
 
 status Game::getStatus() {
 
-    if(currentStatus != TBD){
+    if (currentStatus != TBD) {
         return currentStatus;
     }
 
@@ -823,17 +799,17 @@ status Game::getStatus() {
     majorPieces = majorPieces | pieceBoards[QUEEN + WHITE] | pieceBoards[QUEEN + BLACK];
     bool pawns = pieceBoards[PAWN + WHITE] | pieceBoards[PAWN + BLACK];
 
-    if(!(majorPieces || pawns)){
+    if (!(majorPieces || pawns)) {
         int whiteMinorPieces = locatePieces(pieceBoards[KNIGHT + WHITE] | pieceBoards[BISHOP + WHITE]).size();
         int blackMinorPieces = locatePieces(pieceBoards[KNIGHT + BLACK] | pieceBoards[BISHOP + BLACK]).size();
-      //  printGame();
-        if(whiteMinorPieces < 2 && blackMinorPieces < 2){
+        //  printGame();
+        if (whiteMinorPieces < 2 && blackMinorPieces < 2) {
             return DRAW;
         } else if (blackMinorPieces == 0 && whiteMinorPieces == 2
-        && locatePieces(pieceBoards[KNIGHT + WHITE]).size() == 2){
+                   && locatePieces(pieceBoards[KNIGHT + WHITE]).size() == 2) {
             return DRAW; //only two knights from white
         } else if (whiteMinorPieces == 0 && blackMinorPieces == 2
-                   && locatePieces(pieceBoards[KNIGHT + BLACK]).size() == 2){
+                   && locatePieces(pieceBoards[KNIGHT + BLACK]).size() == 2) {
             return DRAW; //only two knights from black
         }
     }
@@ -842,8 +818,8 @@ status Game::getStatus() {
     //Checking 3-fold repetion
     uint64_t hash = std::hash<Game>()(*this);
     int counter = 0;
-    for (uint64_t pastHash: pastHashes) {
-        counter += hash == pastHash;
+    for (int i = 0; i <= historyIndex; i++) {
+        counter += hash == pastHashes[i];
     }
     if (counter >= 2) {
         currentStatus = DRAW;
@@ -851,7 +827,7 @@ status Game::getStatus() {
     }
 
     //Checking for stalemate
-    if(isMovePlayable()){
+    if (isMovePlayable()) {
         currentStatus = ON_GOING;
         return ON_GOING;
     }
@@ -925,12 +901,7 @@ void Game::loadFen(std::string &fen) {
     moveCount = 0;
 
     //deleting all old stuff
-    while (!pastMoves.empty()) {
-        pastMoves.pop();
-    }
-    while (!pastHashes.empty()) {
-        pastHashes.pop_back();
-    }
+    historyIndex = -1;
 
     for (int i = 0; i < 12; i++) {
         pieceBoards[i] = 0;
@@ -1079,9 +1050,12 @@ void Game::loadFen(std::string &fen) {
     }
 
     eval = Evaluator::simpleEval(*this);
-    printGame();
+    //printGame();
 }
 
+/*
+ * Prints a move such as "e2e4"
+ */
 void Game::printMove(move m) {
     //Generating a hitmaps, hitmaps indicate if a square is occupied or not
     bitboard moveTo = m.finalSquare;
@@ -1127,28 +1101,27 @@ Game::Game() {
 }
 
 
-
- /*
-  * Initialises the knight and king lookup table
-  */
+/*
+ * Initialises the knight and king lookup table
+ */
 void Game::initSquaresLookup() {
-    for(int x = 0; x < 8; x++){
-        for(int y = 0; y < 8; y++){
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
             coord c;
             c.x = x;
             c.y = y;
 
             //Knight
-            knightLookup[x + 8*y].finalSquares = generateKnightFinalSquares(c);
-            knightLookup[x + 8*y].allSquares = 0;
-            for(bitboard b: knightLookup[x + 8*y].finalSquares){
+            knightLookup[x + 8 * y].finalSquares = generateKnightFinalSquares(c);
+            knightLookup[x + 8 * y].allSquares = 0;
+            for (bitboard b: knightLookup[x + 8 * y].finalSquares) {
                 knightLookup[x + 8 * y].allSquares |= b;
             }
 
             //king
             kingLookup[x + 8 * y].finalSquares = generateKingFinalSquares(c);
             kingLookup[x + 8 * y].allSquares = 0;
-            for(bitboard b: kingLookup[x + 8*y].finalSquares){
+            for (bitboard b: kingLookup[x + 8 * y].finalSquares) {
                 kingLookup[x + 8 * y].allSquares |= b;
             }
         }
@@ -1224,7 +1197,7 @@ bool Game::isMovePlayable() {
                 m.promotion = NONE;
                 //Testing the move
                 doMove(m);
-                if(isPositionLegal()){
+                if (isPositionLegal()) {
                     undoMove();
                     return true;
                 }
@@ -1253,7 +1226,7 @@ bool Game::isMovePlayable() {
                 }
                 m.promotion = NONE;
                 doMove(m);
-                if(isPositionLegal()){
+                if (isPositionLegal()) {
                     undoMove();
                     return true;
                 }
@@ -1283,7 +1256,7 @@ bool Game::isMovePlayable() {
                 }
                 m.promotion = NONE;
                 doMove(m);
-                if(isPositionLegal()){
+                if (isPositionLegal()) {
                     undoMove();
                     return true;
                 }
@@ -1297,7 +1270,7 @@ bool Game::isMovePlayable() {
     location.x = getXCoord(pieceBoards[KING + whoToMove]);
     location.y = getYCoord(pieceBoards[KING + whoToMove]);
     auto finalSquares = generateKingFinalSquares(location);
-    for(bitboard finalSquare: finalSquares){
+    for (bitboard finalSquare: finalSquares) {
         //Checking for collision
         if (!(finalSquare & ownHitmap)) {
             move m;
@@ -1306,7 +1279,7 @@ bool Game::isMovePlayable() {
             m.movingPiece = KING;
             m.promotion = NONE;
             doMove(m);
-            if(isPositionLegal()){
+            if (isPositionLegal()) {
                 undoMove();
                 return true;
             }
@@ -1334,7 +1307,7 @@ bool Game::isMovePlayable() {
                 m.promotion = QUEEN;
                 //different promotions are not relevant for this test
                 doMove(m);
-                if(isPositionLegal()){
+                if (isPositionLegal()) {
                     undoMove();
                     return true;
                 }
@@ -1343,7 +1316,7 @@ bool Game::isMovePlayable() {
                 //Not a promotion
                 m.promotion = NONE;
                 doMove(m);
-                if(isPositionLegal()){
+                if (isPositionLegal()) {
                     undoMove();
                     return true;
                 }
@@ -1363,7 +1336,7 @@ bool Game::isMovePlayable() {
                 m.promotion = NONE;
                 m.movingPiece = PAWN;
                 doMove(m);
-                if(isPositionLegal()){
+                if (isPositionLegal()) {
                     undoMove();
                     return true;
                 }
@@ -1388,7 +1361,7 @@ bool Game::isMovePlayable() {
                     if (c.y + vy == 0 || c.y + vy == 7) {
                         m.promotion = QUEEN;
                         doMove(m);
-                        if(isPositionLegal()){
+                        if (isPositionLegal()) {
                             undoMove();
                             return true;
                         }
@@ -1396,7 +1369,7 @@ bool Game::isMovePlayable() {
                     } else {
                         m.promotion = NONE;
                         doMove(m);
-                        if(isPositionLegal()){
+                        if (isPositionLegal()) {
                             undoMove();
                             return true;
                         }

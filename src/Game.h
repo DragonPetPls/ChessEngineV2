@@ -66,8 +66,6 @@ class Game {
 private:
     uint8_t currentStatus = TBD;
 
-    std::list<uint64_t> pastHashes;
-
     squaresLookup kingLookup[64];
 
     void initSquaresLookup();
@@ -81,26 +79,20 @@ private:
     //This evaluation is updated whenever a move is made to allow for a fast evaluation which can the be refined if it seems worth the time
     int eval = 0;
 
-    std::stack<pastMove> pastMoves;
+
+    uint64_t pastHashes[1000];
+    pastMove moveHistory[1000];
+    int historyIndex = 0;
 
     std::vector<bitboard> &getKnightFinalSquares(coord location);
-
     bitboard &getKnightReachableSquares(coord location);
-
     std::vector<bitboard> &getKingFinalSquares(coord location);
-
     bitboard &getKingReachableSquares(coord location);
-
     std::vector<bitboard> generateKnightFinalSquares(coord knightLocation);
-
     std::vector<bitboard> generateKingFinalSquares(coord kingLocation);
-
     bool isSquareUnderAttack(coord square, color attackingColor, bitboard hitmap);
-
     bool isSquareUnderAttack(coord square, color attackingColor);
-
     bool isMovePlayable();
-
     int counterToDraw = 0;
 
 public:
@@ -114,7 +106,7 @@ public:
 
     void loadStartingPosition();
 
-    void doMove(move m);
+    void doMove(move &m);
 
     move stringToMove(std::string move);
 
@@ -169,11 +161,11 @@ namespace std {
         std::size_t operator()(const GameKey &k) const {
             bitboard hash = 0;
             for (int i = 0; i < 12; i++) {
-                hash ^= std::hash<bitboard>{}(k.pieceBoards[i]) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+                hash ^= (k.pieceBoards[i]) + 0x9e3779b9;
             }
-            hash ^= std::hash<uint8_t>{}(k.whoToMove) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-            hash ^= std::hash<uint8_t>{}(k.castleRights) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-            hash ^= std::hash<uint8_t>{}(k.enPassant) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            hash ^= (k.whoToMove) + 0x9e677Fb9;
+            hash ^= (k.castleRights) + 0x9e3879b1;
+            hash ^= (k.enPassant) + 0x9e32C9A3;
             return hash;
         }
     };
@@ -186,11 +178,11 @@ namespace std {
         std::size_t operator()(const Game &p) const {
             uint64_t hash = 0;
             for (int i = 0; i < 12; i++) {
-                hash += (i * 13 * p.getPieceBoards()[i]) % (i * 186125431121 + 1923546);
+                hash ^= (p.getPieceBoards()[i]) + 0x9e3779b9;
             }
-            hash += 247513841 * p.getWhoToMove();
-            hash += 761565351345173 * p.getCastleRights();
-            hash += 746275115481 * p.getEnPassant();
+            hash ^= (p.getWhoToMove()) + 0x9e677Fb9;
+            hash ^= (p.getCastleRights()) + 0x9e3879b1;
+            hash ^= (p.getEnPassant()) + 0x9e32C9A3;
             return hash;
         }
     };
