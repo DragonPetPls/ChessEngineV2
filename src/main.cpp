@@ -7,7 +7,7 @@
 #include "magicBitboards.h"
 #include "Evaluator.h"
 
-#define GAME_DEBUG
+//#define GAME_DEBUG
 //#define MAGIC_DEBUG
 //#define ENGINE_DEBUG
 

@@ -64,8 +64,8 @@ int Engine::search(Game g, int toDepth) {
         keepRunning = true;
     }
 
-    hashTable.clear();
-    hashTable.reserve(40000000);
+    //hashTable.clear();
+    //hashTable.reserve(40000000);
 
     int depth = 1;
     int score;
@@ -77,7 +77,7 @@ int Engine::search(Game g, int toDepth) {
     while (keepRunning && (depth <= toDepth)) {
         score = negamax(g, depth, MINUS_INF, PLUS_INF, depth);
         if (keepRunning) {
-            bestContinuation = hashTable[g.toKey()].bestCon;
+            bestContinuation = transpositionTable.writeEntry(g, MINUS_INF, PLUS_INF, depth)->bestCon;
             std::cout << "info depth " << depth << " score cp " << score << std::endl;
         }
         if(score > WIN - 10000 || depth > 100){
@@ -111,33 +111,32 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
     //Exit condition
     if (g.getStatus() != ON_GOING) {
         //Position is the end of the game
-        if (hashTable.find(g.toKey()) == hashTable.end()) {
-            setNode(g, Evaluator::evalPosition(g, beta), 0, MINUS_INF, PLUS_INF, true);
+        node* nodePtr = transpositionTable.readEntry(g, alpha, beta, 0);
+        if (nodePtr == nullptr) {
+            int score = Evaluator::evalPosition(g, beta);
+            setNode(g, score, 0, MINUS_INF, PLUS_INF, true);
+            return score;
         }
-        return hashTable[g.toKey()].score;
+        return nodePtr->score;
     }
 
     //Checking existing hashtable if the entry already exists
-    if (hashTable.find(g.toKey()) != hashTable.end()) {
-        node *n = &hashTable[g.toKey()];
+    node* nodePtrRead = transpositionTable.readEntry(g, alpha, beta, depth);
+    if (nodePtrRead != nullptr) {
+        return nodePtrRead->score;
+    }
 
-        if (n->depth >= depth
-            && n->alpha <= alpha
-            && n->beta >= beta) {
-            return n->score;
-        } else if (n->isOver) {
-            return n->score;
-        }
-        nBestCon = n->bestCon;
-        if(n->score < alpha - 100){
-            depth--;
-        }
+
+    node* prvNode = transpositionTable.readEntry(g, PLUS_INF, MINUS_INF, depth - 1);
+    if(prvNode != nullptr){
+        nBestCon = prvNode->bestCon;
     }
 
     if (depth <= 0) {
         //Exit due to depth
-        setNode(g, quiesce(g, alpha, beta), depth, alpha, beta, false);
-        return hashTable[g.toKey()].score;
+        int score = quiesce(g, alpha, beta);
+        setNode(g, score, depth, alpha, beta, false);
+        return score;
     }
 
     //Going though future moves
@@ -204,11 +203,12 @@ int Engine::negamax(Game &g, int depth, int alpha, int beta, int toDepth) {
 }
 
 void Engine::setNode(Game &g, int score, int depth, int alpha, int beta, bool isOver, int bestCon) {
-    if (hashTable.find(g.toKey()) == hashTable.end()) {
-        node n;
-        hashTable.insert(std::make_pair(g.toKey(), n));
+
+    if(!keepRunning){
+        return;
     }
-    node *n = &hashTable[g.toKey()];
+
+    node *n = transpositionTable.writeEntry(g, alpha, beta, depth);
     n->depth = depth;
     n->score = score;
     n->alpha = alpha;

@@ -225,6 +225,30 @@ Game.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/Game.cpp.s
 .PHONY : Game.cpp.s
 
+TranspositionTable.o: TranspositionTable.cpp.o
+.PHONY : TranspositionTable.o
+
+# target to build an object file
+TranspositionTable.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/TranspositionTable.cpp.o
+.PHONY : TranspositionTable.cpp.o
+
+TranspositionTable.i: TranspositionTable.cpp.i
+.PHONY : TranspositionTable.i
+
+# target to preprocess a source file
+TranspositionTable.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/TranspositionTable.cpp.i
+.PHONY : TranspositionTable.cpp.i
+
+TranspositionTable.s: TranspositionTable.cpp.s
+.PHONY : TranspositionTable.s
+
+# target to generate assembly for a file
+TranspositionTable.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chessEngineV2.dir/build.make CMakeFiles/chessEngineV2.dir/TranspositionTable.cpp.s
+.PHONY : TranspositionTable.cpp.s
+
 magicBitboards.o: magicBitboards.cpp.o
 .PHONY : magicBitboards.o
 
@@ -294,6 +318,9 @@ help:
 	@echo "... Game.o"
 	@echo "... Game.i"
 	@echo "... Game.s"
+	@echo "... TranspositionTable.o"
+	@echo "... TranspositionTable.i"
+	@echo "... TranspositionTable.s"
 	@echo "... magicBitboards.o"
 	@echo "... magicBitboards.i"
 	@echo "... magicBitboards.s"
